@@ -1,7 +1,11 @@
-﻿using Gallery.Core.Models;
+﻿
+using System.Security.Claims;
+using Lumix.Core.Models;
 
-namespace Gallery.Application.Auth;
+namespace Lumix.Application.Auth;
+
 public interface IJwtProvider
 {
     string Generate(User user);
+    RefreshToken GenerateRefreshToken(Guid userId);
 }

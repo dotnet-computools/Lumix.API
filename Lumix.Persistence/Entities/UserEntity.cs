@@ -1,4 +1,6 @@
-﻿using Gallery.Persistence.Entities;
+﻿
+
+using Gallery.Persistence.Entities;
 
 public class UserEntity
 {
@@ -6,6 +8,6 @@ public class UserEntity
     public string UserName { get; set; }
     public string PasswordHash { get; set; }
     public string Email { get; set; }
-    public List<RoleEntity> Roles { get; set; } = new();
+    // public List<RoleEntity> Roles { get; set; } = new();
     public List<RefreshTokenEntity> RefreshTokens { get; set; } = new();
 }

@@ -1,4 +1,4 @@
-﻿namespace Gallery.Application.Auth;
+﻿namespace Lumix.Application.Auth;
 
 public interface IPasswordHasher
 {

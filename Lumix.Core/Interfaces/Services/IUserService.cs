@@ -1,4 +1,4 @@
-﻿namespace Gallery.Core.Interfaces.Services;
+﻿namespace Lumix.Core.Interfaces.Services;
 
 public interface IUserService
 {

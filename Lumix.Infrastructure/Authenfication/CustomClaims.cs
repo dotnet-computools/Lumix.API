@@ -1,6 +1,6 @@
-﻿namespace Gallery.Infrastructure.Authentication;
+﻿namespace Lumix.Infrastructure.Authenfication;
 
 public class CustomClaims
 {
-    internal const string UserId = "userId";
+    public const string UserId = "userId";
 }

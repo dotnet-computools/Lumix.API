@@ -1,4 +1,4 @@
-namespace Gallery.Core.Models;
+namespace Lumix.Core.Models;
 
 public class RefreshToken
 {

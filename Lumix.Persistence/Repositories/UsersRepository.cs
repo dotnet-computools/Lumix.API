@@ -1,17 +1,17 @@
+
+
 using AutoMapper;
-using Gallery.Core.Enums;
-using Gallery.Core.Interfaces.Repositories;
-using Gallery.Core.Models;
-using Gallery.Persistence;
 using Gallery.Persistence.Entities;
-using Microsoft.EntityFrameworkCore;
+using Lumix.Core.Enums;
+using Lumix.Core.Interfaces.Repositories;
+using Lumix.Core.Models;
 
 public class UsersRepository : IUsersRepository
 {
-    private readonly GalleryDbContext _context;
+    private readonly LumixDbContext _context;
     private readonly IMapper _mapper;
 
-    public UsersRepository(GalleryDbContext context, IMapper mapper)
+    public UsersRepository(LumixDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
@@ -29,7 +29,7 @@ public class UsersRepository : IUsersRepository
             UserName = user.UserName,
             PasswordHash = user.PasswordHash,
             Email = user.Email,
-            Roles = { roleEntity }
+           // Roles = { roleEntity }
         };
 
         await _context.Users.AddAsync(userEntity);

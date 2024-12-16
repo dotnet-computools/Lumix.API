@@ -1,6 +1,6 @@
-using Gallery.Core.Models;
+using Lumix.Core.Models;
 
-namespace Gallery.Core.Interfaces.Repositories;
+namespace Lumix.Core.Interfaces.Repositories;
 
 public interface IUsersRepository
 {

@@ -1,8 +1,8 @@
-using Gallery.Application.Auth;
-using Gallery.Infrastructure.Authentication;
+using Lumix.Application.Auth;
+using Lumix.Infrastructure.Authenfication;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gallery.Infrastructure;
+namespace Lumix.Infrastructure;
 
 public static class InfrastructureExtensions
 {
