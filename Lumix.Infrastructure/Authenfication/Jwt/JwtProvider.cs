@@ -7,7 +7,7 @@ using Lumix.Core.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Lumix.Infrastructure.Authenfication;
+namespace Lumix.Infrastructure.Authenfication.Jwt;
 
 public class JwtProvider : IJwtProvider
 {
@@ -18,7 +18,7 @@ public class JwtProvider : IJwtProvider
         _options = options.Value;
     }
 
-    public string Generate(User user)
+    public string GenerateAccessToken(User user)
     {
         var claims = new[]
         {

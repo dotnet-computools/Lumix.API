@@ -1,37 +1,40 @@
 using System.Text;
+using Lumix.API.Extensions;
+using Lumix.API.Infrastructure;
+using Lumix.Application;
+using Lumix.Core.Interfaces.Services;
+using Lumix.Infrastructure;
 using Lumix.Infrastructure.Authenfication;
+using Lumix.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+var AllowSpecificOrigins = "allowSpecificOrigins";
+builder.Host.UseSerilog((context, loggerConfig) =>
+    loggerConfig.ReadFrom.Configuration(context.Configuration));
+var configuration = builder.Configuration;
+var services = builder.Services;
 
 // Add services
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    var jwtOptions = builder.Configuration.GetSection("JwtOptions").Get<JwtOptions>();
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtOptions.Issuer,
-        ValidAudience = jwtOptions.Audience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
-    };
-});
-builder.Services.AddControllers();
+services.AddApiAuthentication(configuration);
+services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
+services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
+services.AddControllers();
+services.AddPersistence(configuration);
+services.AddApplication();
+services.AddInfrastructure();
+builder.Services.AddProblemDetails();
+services.AddExceptionHandler<GlobalExceptionHandler>();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+services.AddAutoMapper(typeof(DataBaseMappings));
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
 
+services.AddScoped<IUserService, UserService>();
 var app = builder.Build();
-
 
 if (app.Environment.IsDevelopment())
 {
@@ -40,10 +43,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

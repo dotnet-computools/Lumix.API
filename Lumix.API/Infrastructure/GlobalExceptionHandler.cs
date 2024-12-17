@@ -2,7 +2,7 @@ using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Gallery.Infrastructure;
+namespace Lumix.API.Infrastructure;
 
 public class GlobalExceptionHandler : IExceptionHandler
 {

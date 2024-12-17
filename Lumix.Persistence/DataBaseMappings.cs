@@ -1,15 +1,13 @@
 using AutoMapper;
-using Gallery.Core.Models;
-using Gallery.Persistence.Entities;
+using Lumix.Core.Models;
+using Lumix.Persistence.Entities;
 
-namespace Gallery.Persistence;
+namespace Lumix.Persistence;
 
 public class DataBaseMappings : Profile
 {
     public DataBaseMappings()
     {
-        CreateMap<AlbumEntity, Album>();
-        CreateMap<PhotoEntity, Photo>();
         CreateMap<UserEntity, User>();
         CreateMap<RefreshTokenEntity, RefreshToken>();
     }

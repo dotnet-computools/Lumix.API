@@ -1,6 +1,6 @@
 ﻿
 
-using Gallery.Persistence.Entities;
+using Lumix.Persistence.Entities;
 
 public class UserEntity
 {

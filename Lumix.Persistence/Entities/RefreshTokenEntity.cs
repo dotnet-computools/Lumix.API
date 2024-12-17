@@ -1,4 +1,4 @@
-namespace Gallery.Persistence.Entities;
+namespace Lumix.Persistence.Entities;
 
 public class RefreshTokenEntity
 {

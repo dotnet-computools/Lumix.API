@@ -6,6 +6,6 @@ namespace Lumix.Application.Auth;
 
 public interface IJwtProvider
 {
-    string Generate(User user);
+    string GenerateAccessToken(User user);
     RefreshToken GenerateRefreshToken(Guid userId);
 }

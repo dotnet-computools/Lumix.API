@@ -1,5 +1,6 @@
 using Lumix.Application.Auth;
 using Lumix.Infrastructure.Authenfication;
+using Lumix.Infrastructure.Authenfication.Jwt;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Lumix.Infrastructure;

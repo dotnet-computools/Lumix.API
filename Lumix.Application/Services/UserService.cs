@@ -41,15 +41,20 @@ public class UserService : IUserService
 
         if (!result)
         {
-            throw new Exception("Failed to login");
+            throw new UnauthorizedAccessException("Invalid credentials");
         }
 
-        var accessToken = _jwtProvider.Generate(user);
-        var refreshToken = _jwtProvider.GenerateRefreshToken(user.Id);
+        var accessToken = _jwtProvider.GenerateAccessToken(user);
+        var existingRefreshToken = await _usersRepository.GetRefreshTokenByUserId(user.Id);
 
-        await _usersRepository.AddRefreshToken(refreshToken);
+        if (existingRefreshToken == null || existingRefreshToken.ExpiresAt <= DateTime.UtcNow)
+        {
+            var newRefreshToken = _jwtProvider.GenerateRefreshToken(user.Id);
+            await _usersRepository.AddRefreshToken(newRefreshToken);
+            return (accessToken, newRefreshToken.Token);
+        }
 
-        return (accessToken, refreshToken.Token);
+        return (accessToken, existingRefreshToken.Token);
     }
 
     public async Task<string> RefreshToken(string token)
@@ -73,10 +78,7 @@ public class UserService : IUserService
             throw new InvalidOperationException("User not found for the given refresh token");
         }
 
-        var newAccessToken = _jwtProvider.Generate(user);
-        var newRefreshToken = _jwtProvider.GenerateRefreshToken(user.Id);
-
-        await _usersRepository.AddRefreshToken(newRefreshToken);
+        var newAccessToken = _jwtProvider.GenerateAccessToken(user);
 
         return newAccessToken;
     }
