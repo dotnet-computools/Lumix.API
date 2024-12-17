@@ -1,4 +1,5 @@
 
+using Lumix.API.Contracts.Requests;
 using Lumix.Core.Interfaces.Services;
 using Lumix.Core.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -64,21 +65,4 @@ namespace Lumix.API.Controllers
         }
     }
 
-    public class RegisterRequest
-    {
-        public string UserName { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
-
-    public class LoginRequest
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
-
-    public class RefreshTokenRequest
-    {
-        public string RefreshToken { get; set; }
-    }
 }
