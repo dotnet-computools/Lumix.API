@@ -1,6 +1,8 @@
-﻿using Lumix.Persistence.Entities;
+﻿using Lumix.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Like = Lumix.Persistence.Entities.Like;
+using Photo = Lumix.Persistence.Entities.Photo;
 
 namespace Lumix.Persistence.Configurations
 {
