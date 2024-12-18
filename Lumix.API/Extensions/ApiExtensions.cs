@@ -54,28 +54,5 @@ public static class ApiExtensions
                     }
                 };
             });
-
-        //     services.AddScoped<IPermissionService, PermissionService>();
-        //     services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
-        //
-        //     services.AddAuthorization(options =>
-        //     {
-        //         options.AddPolicy("AdminPolicy", policy =>
-        //         {
-        //             policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
-        //
-        //             policy.Requirements.Add(new PermissionRequirement([Permission.Create]));
-        //         });
-        //     });
-        // }
-        //
-        // public static IEndpointConventionBuilder RequirePermissions<TBuilder>(
-        //     this TBuilder builder, params Permission[] permissions)
-        //         where TBuilder : IEndpointConventionBuilder
-        // {
-        //     return builder
-        //         .RequireAuthorization(pb =>
-        //             pb.AddRequirements(new PermissionRequirement(permissions)));
-        // }
     }
 }

@@ -23,7 +23,7 @@ services.AddApiAuthentication(configuration);
 services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
 services.AddControllers();
-services.AddPersistence(configuration);
+
 services.AddApplication();
 services.AddInfrastructure();
 builder.Services.AddProblemDetails();
