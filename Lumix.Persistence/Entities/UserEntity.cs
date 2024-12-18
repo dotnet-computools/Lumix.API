@@ -1,6 +1,6 @@
 ﻿
 
-using Lumix.Persistence.Entities;
+namespace Lumix.Persistence.Entities;
 
 public class UserEntity
 {

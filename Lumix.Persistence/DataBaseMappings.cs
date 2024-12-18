@@ -1,6 +1,7 @@
 using AutoMapper;
 using Lumix.Core.Models;
 using Lumix.Persistence.Entities;
+using User = Lumix.Core.Models.User;
 
 namespace Lumix.Persistence;
 

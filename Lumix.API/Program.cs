@@ -27,6 +27,7 @@ services.AddControllers();
 
 services.AddApplication();
 services.AddInfrastructure();
+services.AddPersistence(configuration);
 builder.Services.AddProblemDetails();
 services.AddExceptionHandler<GlobalExceptionHandler>();
 

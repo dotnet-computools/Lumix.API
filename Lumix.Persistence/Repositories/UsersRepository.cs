@@ -3,6 +3,7 @@ using Lumix.Core.Interfaces.Repositories;
 using Lumix.Core.Models;
 using Lumix.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
+using User = Lumix.Core.Models.User;
 
 namespace Lumix.Persistence.Repositories;
 
