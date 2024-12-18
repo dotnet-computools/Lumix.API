@@ -1,4 +1,5 @@
-﻿using Lumix.Persistence.Entities;
+﻿using Lumix.Core.Models;
+using Lumix.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,7 +11,7 @@ namespace Lumix.Persistence.Configurations
 		{
 			builder.HasKey(u => u.Id);
 
-			builder.Property(u => u.Username)
+			builder.Property(u => u.UserName)
 				.IsRequired()
 				.HasMaxLength(30);
 
@@ -32,7 +33,7 @@ namespace Lumix.Persistence.Configurations
 				.IsRequired(false)
 				.HasMaxLength(150);
 
-			builder.HasIndex(u => u.Username)
+			builder.HasIndex(u => u.UserName)
 				.IsUnique();
 
 			builder.HasIndex(u => u.Email)

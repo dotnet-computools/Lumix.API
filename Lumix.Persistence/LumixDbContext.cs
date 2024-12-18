@@ -1,4 +1,4 @@
-﻿using Lumix.Persistence.Entities;
+using Lumix.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lumix.Persistence
@@ -7,13 +7,12 @@ namespace Lumix.Persistence
 	{
 		public LumixDbContext(DbContextOptions<LumixDbContext> options) : base(options) { }
 		public LumixDbContext() { }
-
-		public DbSet<User> Users { get; set; }
+		public DbSet<UserEntity> Users { get; set; }
 		public DbSet<Photo> Photos { get; set; }
 		public DbSet<Like> Likes { get; set; }
 		public DbSet<Comment> Comments { get; set; }
 		public DbSet<Follow> Follows { get; set; }
-		public DbSet<RefreshToken> RefreshTokens { get; set; }
+		public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

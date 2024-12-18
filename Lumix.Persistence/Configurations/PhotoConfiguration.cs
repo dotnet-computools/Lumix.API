@@ -1,4 +1,5 @@
-﻿using Lumix.Persistence.Entities;
+﻿using Lumix.Core.Models;
+using Lumix.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
