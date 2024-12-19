@@ -4,6 +4,6 @@ namespace Lumix.Core.Interfaces.Repositories;
 
 public interface IUsersRepository
 {
-	Task<UserDto> GetByEmail(string email);
-
+    Task<UserDto> GetByEmail(string email);
+   
 }

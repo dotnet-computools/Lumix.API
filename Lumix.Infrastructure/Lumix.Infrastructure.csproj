@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Lumix.Application\Lumix.Application.csproj" />
+		<ProjectReference Include="..\Lumix.Persistence\Lumix.Persistence.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

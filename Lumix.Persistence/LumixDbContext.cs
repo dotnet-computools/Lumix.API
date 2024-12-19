@@ -7,7 +7,6 @@ namespace Lumix.Persistence
 	{
 		public LumixDbContext(DbContextOptions<LumixDbContext> options) : base(options) { }
 		public LumixDbContext() { }
-
 		public DbSet<User> Users { get; set; }
 		public DbSet<Photo> Photos { get; set; }
 		public DbSet<Like> Likes { get; set; }
