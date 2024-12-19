@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using Lumix.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 var AllowSpecificOrigins = "allowSpecificOrigins";
