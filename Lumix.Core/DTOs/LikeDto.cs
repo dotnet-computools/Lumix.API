@@ -2,9 +2,28 @@
 {
 	public class LikeDto
 	{
-		public Guid Id { get; set; }
-		public Guid UserId { get; set; }
-		public Guid PhotoId { get; set; }
-		public DateTime CreatedAt { get; set; }
+		private LikeDto(
+			Guid id,
+			Guid userId,
+			Guid photoId)
+		{
+			Id = id;
+			UserId = userId;
+			PhotoId = photoId;
+			CreatedAt = DateTime.UtcNow;
+		}
+
+		public Guid Id { get; }
+		public Guid UserId { get; }
+		public Guid PhotoId { get; }
+		public DateTime CreatedAt { get; }
+
+		public static LikeDto Create(
+			Guid id,
+			Guid userId,
+			Guid photoId)
+		{
+			return new LikeDto(id, userId, photoId);
+		}
 	}
 }

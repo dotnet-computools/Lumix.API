@@ -10,27 +10,18 @@ namespace Lumix.Persistence.Configurations
 		{
 			builder.HasKey(l => l.Id);
 
+			// Unique Constraint to prevent multiple likes from same user
 			builder.HasIndex(l => new { l.UserId, l.PhotoId }).IsUnique();
 
-			builder.Property(l => l.UserId)
-				.IsRequired();
-
-			builder.Property(l => l.PhotoId)
-				.IsRequired();
-
-			builder.Property(l => l.CreatedAt)
-				.IsRequired();
-
-
-			builder.HasOne<User>()
-				.WithMany()
+			builder.HasOne(l => l.User)
+				.WithMany(u => u.Likes)
 				.HasForeignKey(l => l.UserId)
-				.OnDelete(DeleteBehavior.Cascade);
+				.OnDelete(DeleteBehavior.Restrict);
 
-			builder.HasOne<Photo>()
-				.WithMany()
+			builder.HasOne(l => l.Photo)
+				.WithMany(p => p.Likes)
 				.HasForeignKey(l => l.PhotoId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }
