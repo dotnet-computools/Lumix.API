@@ -7,7 +7,7 @@ namespace Lumix.Persistence.Entities
         public Guid FollowingId { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public UserEntity? Follower { get; set; }
-        public UserEntity? Following { get; set; }
+        public User? Follower { get; set; }
+        public User? Following { get; set; }
     }
 }

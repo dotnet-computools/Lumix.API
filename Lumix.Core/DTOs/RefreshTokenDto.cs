@@ -1,6 +1,6 @@
-namespace Lumix.Core.Models;
+namespace Lumix.Core.DTOs;
 
-public class RefreshToken
+public class RefreshTokenDto
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }

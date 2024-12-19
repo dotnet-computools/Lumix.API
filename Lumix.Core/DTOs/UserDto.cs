@@ -1,4 +1,4 @@
-namespace Lumix.Core.Models;
+namespace Lumix.Core.DTOs;
 
 public class UserDto
     {

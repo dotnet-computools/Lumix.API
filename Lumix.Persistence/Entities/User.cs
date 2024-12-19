@@ -2,7 +2,7 @@
 
 namespace Lumix.Persistence.Entities;
 
-public class UserEntity
+public class User
 {
     public Guid Id { get; set; }
     public string Username { get; set; } = string.Empty;
@@ -17,5 +17,5 @@ public class UserEntity
     public List<Comment> Comments { get; set; } = [];
     public List<Follow> Followers { get; set; } = [];
     public List<Follow> Following { get; set; } = [];
-    public List<RefreshTokenEntity> RefreshTokens { get; set; } = [];
+    public List<RefreshToken> RefreshTokens { get; set; } = [];
 }

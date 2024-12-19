@@ -1,8 +1,8 @@
-﻿namespace Lumix.Core.Models
+﻿namespace Lumix.Core.DTOs
 {
-	public class LIkeDto
+	public class LikeDto
 	{
-		private LIkeDto(
+		private LikeDto(
 			Guid id,
 			Guid userId,
 			Guid photoId)
@@ -18,12 +18,12 @@
 		public Guid PhotoId { get; }
 		public DateTime CreatedAt { get; }
 
-		public static LIkeDto Create(
+		public static LikeDto Create(
 			Guid id,
 			Guid userId,
 			Guid photoId)
 		{
-			return new LIkeDto(id, userId, photoId);
+			return new LikeDto(id, userId, photoId);
 		}
 	}
 }

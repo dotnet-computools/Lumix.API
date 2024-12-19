@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Lumix.Application\Lumix.Application.csproj" />
+		<ProjectReference Include="..\Lumix.Persistence\Lumix.Persistence.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -18,6 +19,10 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Authenfication\Permissions\" />
 	</ItemGroup>
 
 </Project>

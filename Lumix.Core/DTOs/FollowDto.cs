@@ -1,8 +1,8 @@
-﻿namespace Lumix.Core.Models
+﻿namespace Lumix.Core.DTOs
 {
-	public class Follow
+	public class FollowDto
 	{
-		private Follow(
+		private FollowDto(
 			Guid id,
 			Guid followerId,
 			Guid followingId)
@@ -18,7 +18,7 @@
 		public Guid FollowingId { get; }
 		public DateTime CreatedAt { get; }
 
-		public static Follow Create(
+		public static FollowDto Create(
 			Guid id,
 			Guid followerId,
 			Guid followingId)
@@ -26,7 +26,7 @@
 			if (followerId == followingId)
 				throw new ArgumentException("A user cannot follow themselves");
 
-			return new Follow(id, followerId, followingId);
+			return new FollowDto(id, followerId, followingId);
 		}
 	}
 }
