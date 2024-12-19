@@ -15,6 +15,7 @@ namespace Lumix.Persistence
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
             services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<IAuthRepository, AuthRepository>();
             return services;
         }
     }

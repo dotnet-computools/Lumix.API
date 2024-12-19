@@ -1,7 +1,7 @@
-﻿using Lumix.Core.Entities;
+﻿using Lumix.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Follow = Lumix.Persistence.Entities.Follow;
+
 
 namespace Lumix.Persistence.Configurations
 {
@@ -11,24 +11,18 @@ namespace Lumix.Persistence.Configurations
 		{
 			builder.HasKey(f => f.Id);
 
-			builder.Property(f => f.FollowerId)
-				.IsRequired();
+			builder.HasIndex(f => new { f.FollowerId, f.FollowingId }).IsUnique();
 
-			builder.Property(f => f.FollowingId)
-				.IsRequired();
-
-			builder.Property(f => f.CreatedAt)
-				.IsRequired();
-
-			builder.HasOne<User>()
-				.WithMany()
+			
+			builder.HasOne(f => f.Follower)
+				.WithMany(u => u.Following)
 				.HasForeignKey(f => f.FollowerId)
-				.OnDelete(DeleteBehavior.Cascade);
+				.OnDelete(DeleteBehavior.Restrict);
 
-			builder.HasOne<User>()
-				.WithMany()
+			builder.HasOne(f => f.Following)
+				.WithMany(u => u.Followers)
 				.HasForeignKey(f => f.FollowingId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

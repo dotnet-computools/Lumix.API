@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Lumix.Application.Auth;
-using Lumix.Core.Models;
+using Lumix.Core.DTOs;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -18,11 +18,11 @@ public class JwtProvider : IJwtProvider
         _options = options.Value;
     }
 
-    public string GenerateAccessToken(User user)
+    public string GenerateAccessToken(UserDto userDto)
     {
         var claims = new[]
         {
-            new Claim(CustomClaims.UserId, user.Id.ToString()),
+            new Claim(CustomClaims.UserId, userDto.Id.ToString()),
             new Claim("Admin", "true")
         };
 
@@ -31,6 +31,7 @@ public class JwtProvider : IJwtProvider
             SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
+            issuer: _options.Issuer,
             claims: claims,
             expires: DateTime.UtcNow.AddHours(_options.ExpiresHours),
             signingCredentials: signingCredentials);
@@ -38,9 +39,9 @@ public class JwtProvider : IJwtProvider
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public RefreshToken GenerateRefreshToken(Guid userId)
+    public RefreshTokenDto GenerateRefreshToken(Guid userId)
     {
-        return new RefreshToken
+        return new RefreshTokenDto
         {
             Id = Guid.NewGuid(),
             UserId = userId,
