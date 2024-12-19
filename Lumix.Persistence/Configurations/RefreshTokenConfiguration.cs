@@ -1,5 +1,4 @@
-﻿using Lumix.Core.Models;
-using Lumix.Persistence.Entities;
+﻿using Lumix.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,23 +10,17 @@ namespace Lumix.Persistence.Configurations
 		public void Configure(EntityTypeBuilder<RefreshToken> builder)
 		{
 			builder.HasKey(rt => rt.Id);
-
-			builder.Property(rt => rt.UserId)
-				.IsRequired();
-
+			
 			builder.Property(rt => rt.Token)
-				.IsRequired();
-
-			builder.Property(rt => rt.ExpiresAt)
-				.IsRequired();
-
-			builder.Property(rt => rt.CreatedAt)
-				.IsRequired();
-
-			builder.HasOne<User>()
-				.WithMany()
+				.IsRequired()
+				.HasMaxLength(500);
+			
+			builder.HasOne(rt => rt.User)
+				.WithMany(u => u.RefreshTokens)
 				.HasForeignKey(rt => rt.UserId)
 				.OnDelete(DeleteBehavior.Cascade);
+			
+			builder.HasIndex(rt => rt.Token).IsUnique();
 		}
 	}
 }
