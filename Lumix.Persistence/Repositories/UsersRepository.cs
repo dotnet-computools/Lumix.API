@@ -1,9 +1,8 @@
 using AutoMapper;
+using Lumix.Core.DTOs;
 using Lumix.Core.Interfaces.Repositories;
-using Lumix.Core.Models;
 using Lumix.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
-using User = Lumix.Core.Models.User;
 
 namespace Lumix.Persistence.Repositories;
 
@@ -18,16 +17,16 @@ public class UsersRepository : IUsersRepository
         _mapper = mapper;
     }
 
-    public async Task Add(User user)
+    public async Task Add(UserDto user)
     {
         // var roleEntity = await _context.Roles
         //                      .SingleOrDefaultAsync(r => r.Id == (int)Role.Admin)
         //                  ?? throw new InvalidOperationException();
 
-        var userEntity = new UserEntity()
+        var userEntity = new User()
         {
             Id = user.Id,
-            UserName = user.UserName,
+            Username = user.Username,
             PasswordHash = user.PasswordHash,
             Email = user.Email,
             // Roles = { roleEntity }
@@ -47,7 +46,7 @@ public class UsersRepository : IUsersRepository
             throw new InvalidOperationException("A refresh token with the same value already exists.");
         }
 
-        var refreshTokenEntity = new RefreshTokenEntity
+        var refreshTokenEntity = new RefreshToken
         {
             Id = refreshToken.Id,
             UserId = refreshToken.UserId,
@@ -76,14 +75,14 @@ public class UsersRepository : IUsersRepository
     }
     
 
-    public async Task<User?> GetUserByRefreshToken(string refreshToken)
+/*    public async Task<User?> GetUserByRefreshToken(string refreshToken)
     {
         var userEntity = await _context.Users
             .Include(u => u.RefreshTokens)
             .FirstOrDefaultAsync(u => u.RefreshTokens.Any(rt => rt.Token == refreshToken && rt.ExpiresAt > DateTime.UtcNow));
 
         return userEntity is null ? null : _mapper.Map<User>(userEntity);
-    }
+    }*/
 
     public async Task<User> GetByEmail(string email)
     {
@@ -94,20 +93,45 @@ public class UsersRepository : IUsersRepository
         return _mapper.Map<User>(userEntity);
     }
 
-    // public async Task<HashSet<Permission>> GetUserPermissions(Guid userId)
-    // {
-    //     var roles = await _context.Users
-    //         .AsNoTracking()
-    //         .Include(u => u.Roles)
-    //         .ThenInclude(r => r.Permissions)
-    //         .Where(u => u.Id == userId)
-    //         .Select(u => u.Roles)
-    //         .ToArrayAsync();
-    //
-    //     return roles
-    //         .SelectMany(r => r)
-    //         .SelectMany(r => r.Permissions)
-    //         .Select(p => (Permission)p.Id)
-    //         .ToHashSet();
-    // }
+	Task<UserDto> IUsersRepository.GetByEmail(string email)
+	{
+		throw new NotImplementedException();
+	}
+
+	public Task AddRefreshToken(RefreshTokenDto refreshToken)
+	{
+		throw new NotImplementedException();
+	}
+
+	Task<RefreshTokenDto?> IUsersRepository.GetRefreshToken(string token)
+	{
+		throw new NotImplementedException();
+	}
+
+	Task<RefreshTokenDto?> IUsersRepository.GetRefreshTokenByUserId(Guid userId)
+	{
+		throw new NotImplementedException();
+	}
+
+	public Task<UserDto?> GetUserByRefreshToken(string refreshToken)
+	{
+		throw new NotImplementedException();
+	}
+
+	// public async Task<HashSet<Permission>> GetUserPermissions(Guid userId)
+	// {
+	//     var roles = await _context.Users
+	//         .AsNoTracking()
+	//         .Include(u => u.Roles)
+	//         .ThenInclude(r => r.Permissions)
+	//         .Where(u => u.Id == userId)
+	//         .Select(u => u.Roles)
+	//         .ToArrayAsync();
+	//
+	//     return roles
+	//         .SelectMany(r => r)
+	//         .SelectMany(r => r.Permissions)
+	//         .Select(p => (Permission)p.Id)
+	//         .ToHashSet();
+	// }
 }

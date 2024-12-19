@@ -7,12 +7,18 @@ namespace Lumix.Persistence
 	{
 		public LumixDbContext(DbContextOptions<LumixDbContext> options) : base(options) { }
 		public LumixDbContext() { }
-		public DbSet<UserEntity> Users { get; set; }
+
+		public DbSet<User> Users { get; set; }
 		public DbSet<Photo> Photos { get; set; }
 		public DbSet<Like> Likes { get; set; }
 		public DbSet<Comment> Comments { get; set; }
 		public DbSet<Follow> Follows { get; set; }
-		public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
+		public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		{
+			optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=LumixDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

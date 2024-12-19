@@ -1,11 +1,9 @@
-﻿
-using System.Security.Claims;
-using Lumix.Core.Models;
+﻿using Lumix.Core.DTOs;
 
 namespace Lumix.Application.Auth;
 
 public interface IJwtProvider
 {
-    string GenerateAccessToken(User user);
-    RefreshToken GenerateRefreshToken(Guid userId);
+    string GenerateAccessToken(UserDto user);
+    RefreshTokenDto GenerateRefreshToken(Guid userId);
 }

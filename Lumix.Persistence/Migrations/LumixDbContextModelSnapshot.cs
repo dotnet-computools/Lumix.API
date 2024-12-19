@@ -94,7 +94,8 @@ namespace Lumix.Persistence.Migrations
 
                     b.HasIndex("PhotoId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "PhotoId")
+                        .IsUnique();
 
                     b.ToTable("Likes");
                 });

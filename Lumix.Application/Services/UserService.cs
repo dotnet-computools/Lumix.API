@@ -2,7 +2,7 @@
 using Lumix.Application.Auth;
 using Lumix.Core.Interfaces.Repositories;
 using Lumix.Core.Interfaces.Services;
-using Lumix.Core.Models;
+using Lumix.Core.DTOs;
 
 public class UserService : IUserService
 {
@@ -22,15 +22,15 @@ public class UserService : IUserService
 
     public async Task Register(string userName, string email, string password)
     {
-        var hashedPassword = _passwordHasher.Generate(password);
+        /*var hashedPassword = _passwordHasher.Generate(password);
 
-        var user = User.Create(
+        var user = UserDto.Create(
             Guid.NewGuid(),
             userName,
             hashedPassword,
             email);
 
-        await _usersRepository.Add(user);
+        await _usersRepository.Add(user);*/
     }
 
     public async Task<(string AccessToken, string RefreshToken)> Login(string email, string password)

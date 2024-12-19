@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lumix.Persistence.Migrations
 {
     [DbContext(typeof(LumixDbContext))]
-    [Migration("20241216144556_InitialCommit")]
-    partial class InitialCommit
+    [Migration("20241219130120_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -97,7 +97,8 @@ namespace Lumix.Persistence.Migrations
 
                     b.HasIndex("PhotoId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "PhotoId")
+                        .IsUnique();
 
                     b.ToTable("Likes");
                 });

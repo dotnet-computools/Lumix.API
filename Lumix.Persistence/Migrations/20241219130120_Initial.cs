@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Lumix.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCommit : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -174,9 +174,10 @@ namespace Lumix.Persistence.Migrations
                 column: "PhotoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_UserId",
+                name: "IX_Likes_UserId_PhotoId",
                 table: "Likes",
-                column: "UserId");
+                columns: new[] { "UserId", "PhotoId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Photos_UserId",

@@ -1,7 +1,6 @@
-﻿using Lumix.Core.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Follow = Lumix.Persistence.Entities.Follow;
+using Lumix.Persistence.Entities;
 
 namespace Lumix.Persistence.Configurations
 {
