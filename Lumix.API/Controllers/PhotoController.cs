@@ -58,5 +58,33 @@ namespace Lumix.API.Controllers
 				return BadRequest();
 			}
 		}
+
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteById(Guid id)
+		{
+			try
+			{
+				var userId = HttpContext.GetUserId() ?? Guid.Empty;
+				if (userId == Guid.Empty)
+				{
+					return Unauthorized();
+				}
+
+				var result = await _photoService.IsPhotoBelongToUser(userId, id);
+
+				if (!result)
+				{
+					return Forbid();
+				}
+
+				await _photoService.Delete(id);
+				return Ok();
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+		}
 	}
 }

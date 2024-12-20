@@ -62,6 +62,15 @@ namespace Lumix.Persistence.Repositories
 			return _mapper.Map<PhotoDto>(photo);
 		}
 
+		public async Task<PhotoDto> GetByUserAndPhotoId(Guid userId, Guid photoId)
+		{
+			var photo = await _context.Photos
+				.AsNoTracking()
+				.FirstOrDefaultAsync(p => p.Id == photoId && p.UserId == userId) ?? throw new InvalidOperationException("Operation not available");
+
+			return _mapper.Map<PhotoDto>(photo);
+		}
+
 		public async Task Update(PhotoDto photo)
 		{
 			var photoEntity = _mapper.Map<Photo>(photo);

@@ -34,5 +34,17 @@ namespace Lumix.Application.Services
 		{
 			return await _photosRepository.GetAllByUserId(userId);
 		}
+
+		public async Task<bool> IsPhotoBelongToUser(Guid userId, Guid photoId)
+		{
+			var photo = await _photosRepository.GetByUserAndPhotoId(userId, photoId);
+
+			return photo != null;
+		}
+
+		public async Task Delete(Guid id)
+		{
+			await _photosRepository.DeleteById(id);
+		}
 	}
 }
