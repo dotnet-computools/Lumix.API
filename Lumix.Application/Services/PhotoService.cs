@@ -30,6 +30,11 @@ namespace Lumix.Application.Services
 			return await _photosRepository.GetById(id);
 		}
 
+		public async Task<IEnumerable<PhotoDto>> GetAll()
+		{
+			return await _photosRepository.GetAll();
+		}
+
 		public async Task<IEnumerable<PhotoDto>> GetAllUserPhotos(Guid userId)
 		{
 			return await _photosRepository.GetAllByUserId(userId);
@@ -40,6 +45,13 @@ namespace Lumix.Application.Services
 			var photo = await _photosRepository.GetByUserAndPhotoId(userId, photoId);
 
 			return photo != null;
+		}
+
+		public async Task UpdateInfo(PhotoDto photoToUpdate, string newTitle, string newTags)
+		{
+			photoToUpdate.Update(newTitle, newTags);
+
+			await _photosRepository.Update(photoToUpdate);
 		}
 
 		public async Task Delete(Guid id)

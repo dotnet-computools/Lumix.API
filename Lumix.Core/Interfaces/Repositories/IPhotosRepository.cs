@@ -6,6 +6,7 @@ namespace Lumix.Core.Interfaces.Repositories
 	{
 		Task Add(PhotoDto photo);
 		Task<PhotoDto> GetById(Guid id);
+		Task<IEnumerable<PhotoDto>> GetAll();
 		Task<PhotoDto> GetByUserAndPhotoId(Guid userId, Guid photoId);
 		Task<IEnumerable<PhotoDto>> GetAllByUserId(Guid userId);
 		Task Update(PhotoDto photo);

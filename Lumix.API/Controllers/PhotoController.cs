@@ -17,7 +17,7 @@ namespace Lumix.API.Controllers
 		}
 
 		[HttpPost("upload")]
-		public async Task<IActionResult> Upload(UploadRequest uploadRequest)
+		public async Task<IActionResult> Upload([FromForm] UploadRequest uploadRequest)
 		{
 			try
 			{
@@ -31,9 +31,29 @@ namespace Lumix.API.Controllers
 				await _photoService.Upload(uploadRequest.Title, uploadRequest.Tags, url: "empty", userId);
 				return Ok();
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				return BadRequest();
+				return BadRequest(ex.Message);
+			}
+		}
+
+		[HttpGet("feed")]
+		public async Task<IActionResult> GetFeed()
+		{
+			try
+			{
+				var userId = HttpContext.GetUserId() ?? Guid.Empty;
+				if (userId == Guid.Empty)
+				{
+					return Unauthorized();
+				}
+
+				var photos = await _photoService.GetAll();
+				return Ok(photos);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
 			}
 		}
 
@@ -53,13 +73,13 @@ namespace Lumix.API.Controllers
 
 				return Ok(photo);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				return BadRequest();
+				return BadRequest(ex.Message);
 			}
 		}
 
-		[HttpDelete("{id}")]
+		[HttpDelete("{id:guid}")]
 		public async Task<IActionResult> DeleteById(Guid id)
 		{
 			try
@@ -71,7 +91,6 @@ namespace Lumix.API.Controllers
 				}
 
 				var result = await _photoService.IsPhotoBelongToUser(userId, id);
-
 				if (!result)
 				{
 					return Forbid();
@@ -80,10 +99,37 @@ namespace Lumix.API.Controllers
 				await _photoService.Delete(id);
 				return Ok();
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+				return BadRequest(ex.Message);
+			}
+		}
 
-				throw;
+		[HttpPut("{id:guid}")]
+		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRequest updateRequest)
+		{
+			try
+			{
+				var userId = HttpContext.GetUserId() ?? Guid.Empty;
+				if (userId == Guid.Empty)
+				{
+					return Unauthorized();
+				}
+
+				var result = await _photoService.IsPhotoBelongToUser(userId, id);
+				if (!result)
+				{
+					return Forbid();
+				}
+
+				var photo = await _photoService.GetById(id);
+				await _photoService.UpdateInfo(photo, updateRequest.Title, updateRequest.Tags);
+
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
 			}
 		}
 	}

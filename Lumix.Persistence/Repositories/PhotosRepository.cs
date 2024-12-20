@@ -44,6 +44,15 @@ namespace Lumix.Persistence.Repositories
 			await _context.SaveChangesAsync();
 		}
 
+		public async Task<IEnumerable<PhotoDto>> GetAll()
+		{
+			var photoList = await _context.Photos
+				.AsNoTracking()
+				.ToListAsync();
+
+			return _mapper.Map<IEnumerable<PhotoDto>>(photoList);
+		}
+
 		public async Task<IEnumerable<PhotoDto>> GetAllByUserId(Guid userId)
 		{
 			var photoList = await _context.Photos
@@ -73,7 +82,16 @@ namespace Lumix.Persistence.Repositories
 
 		public async Task Update(PhotoDto photo)
 		{
-			var photoEntity = _mapper.Map<Photo>(photo);
+			var photoEntity = new Photo()
+			{
+				Id = photo.Id,
+				UserId = photo.UserId,
+				Title = photo.Title,
+				Url = photo.Url,
+				CreatedAt = photo.CreatedAt,
+				Tags = photo.Tags,
+				LikeCount = photo.LikeCount
+			};
 
 			_context.Photos.Update(photoEntity);
 			await _context.SaveChangesAsync();
