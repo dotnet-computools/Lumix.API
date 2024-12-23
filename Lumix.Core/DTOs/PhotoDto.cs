@@ -12,7 +12,7 @@ namespace Lumix.Core.DTOs
 			Guid userId,
 			string title,
 			string url,
-			string? tags = null)
+			string tags)
 		{
 			Id = id;
 			UserId = userId;

@@ -12,6 +12,7 @@ public static class ApplicationExtensions
         services.AddScoped<UserService>();
         services.AddScoped<AuthService>();
 		services.AddScoped<IPhotoService, PhotoService>();
+        services.AddScoped<ILikeService, LikeService>();
 		return services;
     }
     
