@@ -59,5 +59,33 @@ namespace Lumix.Application.Services
 		{
 			await _photosRepository.DeleteById(id);
 		}
+
+		public async Task<IEnumerable<PhotoDto>> GetByTags(string[] tags)
+		{
+			var allPhotos = await _photosRepository.GetAll();
+			var photosByTags = new List<PhotoDto>();
+			
+			foreach (var photo in allPhotos)
+			{
+				bool isMatch = true;
+				foreach (var tag in tags)
+				{
+					if (!photo.Tags.Contains(tag))
+					{
+						isMatch = false;
+						break;
+					}
+				}
+
+				if (!isMatch)
+				{
+					continue;
+				}
+
+				photosByTags.Add(photo);
+			}
+
+			return photosByTags;
+		}
 	}
 }

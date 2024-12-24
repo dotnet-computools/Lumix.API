@@ -132,5 +132,28 @@ namespace Lumix.API.Controllers
 				return BadRequest(ex.Message);
 			}
 		}
+
+		[HttpGet("search")]
+		public async Task<IActionResult> SearchByTags([FromQuery] string tags)
+		{
+			try
+			{
+				var userId = HttpContext.GetUserId() ?? Guid.Empty;
+				if (userId == Guid.Empty)
+				{
+					return Unauthorized();
+				}
+
+				var tagsArray = tags.Split(',').Select(tag => tag.Trim().ToLower()).ToArray();
+
+				var result = await _photoService.GetByTags(tagsArray);
+				return Ok(result);
+
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
 	}
 }
