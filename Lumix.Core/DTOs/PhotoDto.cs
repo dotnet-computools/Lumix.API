@@ -12,13 +12,14 @@ namespace Lumix.Core.DTOs
 			Guid userId,
 			string title,
 			string url,
-			string tags)
+			string tags,
+			DateTime createdAt)
 		{
 			Id = id;
 			UserId = userId;
 			Title = title;
 			Url = url;
-			CreatedAt = DateTime.UtcNow;
+			CreatedAt = createdAt;
 			Tags = tags;
 			LikeCount = 0;
 		}
@@ -39,7 +40,8 @@ namespace Lumix.Core.DTOs
 			Guid userId,
 			string title,
 			string url,
-			string tags)
+			string tags,
+			DateTime createdAt)
 		{
 			if (string.IsNullOrEmpty(title)) throw new ArgumentException("Title cannot be empty");
 			if (string.IsNullOrEmpty(url)) throw new ArgumentException("URL cannot be empty");
@@ -47,7 +49,7 @@ namespace Lumix.Core.DTOs
 			if (title.Length > 200) throw new ArgumentException("Caption can't be longer than 500 characters");
 			if (tags.Length > 500) throw new ArgumentException("Tags can't be longer than 500 characters");
 
-			return new PhotoDto(id, userId, title, url, tags);
+			return new PhotoDto(id, userId, title, url, tags, createdAt);
 		}
 
 		public void Update(

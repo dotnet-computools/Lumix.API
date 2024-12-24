@@ -20,7 +20,8 @@ namespace Lumix.Application.Services
 				userId, 
 				title, 
 				url, 
-				tags);
+				tags,
+				DateTime.UtcNow);
 
 			await _photosRepository.Add(photo);
 		}
