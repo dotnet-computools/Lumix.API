@@ -48,6 +48,7 @@ namespace Lumix.Persistence.Repositories
 		{
 			var photoList = await _context.Photos
 				.AsNoTracking()
+				.OrderByDescending(p => p.CreatedAt)
 				.ToListAsync();
 
 			return _mapper.Map<IEnumerable<PhotoDto>>(photoList);

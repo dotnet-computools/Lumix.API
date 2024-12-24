@@ -18,6 +18,7 @@ namespace Lumix.Persistence
             services.AddScoped<IAuthRepository, AuthRepository>();
 			services.AddScoped<IPhotosRepository, PhotosRepository>();
             services.AddScoped<ILikesRepository, LikesRepository>();
+            services.AddScoped<ICommentsRepository, CommentsRepository>();
 			return services;
         }
     }
