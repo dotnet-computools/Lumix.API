@@ -144,9 +144,7 @@ namespace Lumix.API.Controllers
 					return Unauthorized();
 				}
 
-				var tagsArray = tags.Split(',').Select(tag => tag.Trim().ToLower()).ToArray();
-
-				var result = await _photoService.GetByTags(tagsArray);
+				var result = await _photoService.GetByTags(tags);
 				return Ok(result);
 
 			}

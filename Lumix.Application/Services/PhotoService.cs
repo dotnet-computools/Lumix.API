@@ -16,10 +16,10 @@ namespace Lumix.Application.Services
 		public async Task Upload(string title, string tags, string url, Guid userId)
 		{
 			var photo = PhotoDto.Create(
-				Guid.NewGuid(), 
-				userId, 
-				title, 
-				url, 
+				Guid.NewGuid(),
+				userId,
+				title,
+				url,
 				tags,
 				DateTime.UtcNow);
 
@@ -60,15 +60,16 @@ namespace Lumix.Application.Services
 			await _photosRepository.DeleteById(id);
 		}
 
-		public async Task<IEnumerable<PhotoDto>> GetByTags(string[] tags)
+		public async Task<IEnumerable<PhotoDto>> GetByTags(string tags)
 		{
+			var tagsArray = ConvertTagsToArray(tags);
 			var allPhotos = await _photosRepository.GetAll();
 			var photosByTags = new List<PhotoDto>();
-			
+
 			foreach (var photo in allPhotos)
 			{
 				bool isMatch = true;
-				foreach (var tag in tags)
+				foreach (var tag in tagsArray)
 				{
 					if (!photo.Tags.Contains(tag))
 					{
@@ -86,6 +87,15 @@ namespace Lumix.Application.Services
 			}
 
 			return photosByTags;
+		}
+
+		private IEnumerable<string> ConvertTagsToArray(string tags)
+		{
+			var tagsArray = tags
+				.Split(' ')
+				.Select(tag => tag.ToLower())
+				.ToArray();
+			return tagsArray;
 		}
 	}
 }
