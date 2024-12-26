@@ -1,4 +1,6 @@
 
+using Lumix.Application.Services;
+using Lumix.Core.Interfaces.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Lumix.Application;
@@ -9,7 +11,10 @@ public static class ApplicationExtensions
     {
         services.AddScoped<UserService>();
         services.AddScoped<AuthService>();
-        return services;
+		services.AddScoped<IPhotoService, PhotoService>();
+        services.AddScoped<ILikeService, LikeService>();
+        services.AddScoped<ICommentService, CommentService>();
+		return services;
     }
     
 }
