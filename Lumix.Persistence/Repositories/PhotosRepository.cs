@@ -58,7 +58,9 @@ namespace Lumix.Persistence.Repositories
 		{
 			var photoList = await _context.Photos
 				.AsNoTracking()
-				.Where(p => p.UserId == userId).ToListAsync() ?? throw new InvalidOperationException("Photo not found.");
+				.Where(p => p.UserId == userId)
+				.OrderByDescending(p => p.CreatedAt)
+				.ToListAsync() ?? throw new InvalidOperationException("Photo not found.");
 
 			return _mapper.Map<IEnumerable<PhotoDto>>(photoList);
 		}

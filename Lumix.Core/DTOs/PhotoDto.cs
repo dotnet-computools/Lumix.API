@@ -4,8 +4,8 @@ namespace Lumix.Core.DTOs
 {
 	public class PhotoDto
 	{
-		private readonly List<LikeDto> _likes = [];
-		private readonly List<CommentDto> _comments = [];
+		private readonly List<LikeDto> _likes = new();
+		private readonly List<CommentDto> _comments = new();
 
 		private PhotoDto(
 			Guid id,

@@ -2,7 +2,7 @@
 {
 	public class UploadRequest
 	{
-		public IFormFile PhotoFile { get; set; } = null!;
+		public IFormFile? PhotoFile { get; set; }
 		public string Title { get; set; } = string.Empty;
 		public string Tags { get; set; } = string.Empty;
 	}

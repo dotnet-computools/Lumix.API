@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lumix.API.Controllers
 {
 	[ApiController]
-	[Route("api/Photo")]
+	[Route("api/[controller]")]
 	public class CommentController : Controller
 	{
 		private readonly ICommentService _commentService;
@@ -15,8 +15,8 @@ namespace Lumix.API.Controllers
 			_commentService = commentService;
 		}
 
-		[HttpPost("{id:guid}/comments")]
-		public async Task<IActionResult> PostComment(Guid id, [FromBody] string commentText)
+		[HttpPost("{id:guid}")]
+		public async Task<IActionResult> PostComment(Guid id, [FromForm] string commentText)
 		{
 			try
 			{
@@ -35,7 +35,7 @@ namespace Lumix.API.Controllers
 			}
 		}
 
-		[HttpGet("{id:guid}/comments")]
+		[HttpGet("all/{id:guid}")]
 		public async Task<IActionResult> GetComments(Guid id)
 		{
 			try

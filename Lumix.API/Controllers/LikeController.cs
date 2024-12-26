@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lumix.API.Controllers
 {
 	[ApiController]
-	[Route("api/Photo")]
+	[Route("api/[controller]")]
 	public class LikeController : Controller
 	{
 		private readonly ILikeService _likeService;
@@ -15,7 +15,7 @@ namespace Lumix.API.Controllers
 			_likeService = likeService;
 		}
 
-		[HttpPost("{id:guid}/like")]
+		[HttpPost("{id:guid}")]
 		public async Task<IActionResult> Like(Guid id)
 		{
 			try
