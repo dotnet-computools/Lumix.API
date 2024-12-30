@@ -10,10 +10,14 @@ namespace Lumix.API.Controllers
 	public class PhotoController : Controller
 	{
 		private readonly IPhotoService _photoService;
+		private readonly ITagService _tagService;
+		private readonly IPhotoTagService _photoTagService;
 
-		public PhotoController(IPhotoService photoService)
+		public PhotoController(IPhotoService photoService, ITagService service, IPhotoTagService photoTagService)
 		{
 			_photoService = photoService;
+			_tagService = service;
+			_photoTagService = photoTagService;
 		}
 
 		[HttpPost("upload")]
@@ -27,8 +31,15 @@ namespace Lumix.API.Controllers
 					return Unauthorized();
 				}
 
+				await _tagService.CheckAndAddNewTags(uploadRequest.Tags ?? throw new NullReferenceException("Tags can't be empty"));
+				var tags = await _tagService.GetAllTagsFromStrings(uploadRequest.Tags);
+
+				
+
 				//s3 upload logic
-				await _photoService.Upload(uploadRequest.Title, uploadRequest.Tags, url: "empty", userId);
+				var newPhotoId = await _photoService.Upload(uploadRequest.Title, url: "empty", userId);
+				await _photoTagService.AddNewRange(tags, newPhotoId);
+
 				return Ok();
 			}
 			catch (Exception ex)

@@ -13,17 +13,17 @@ namespace Lumix.Application.Services
 			_photosRepository = photosRepository;
 		}
 
-		public async Task Upload(string title, string tags, string url, Guid userId)
+		public async Task<Guid> Upload(string title, string url, Guid userId)
 		{
 			var photo = PhotoDto.Create(
 				Guid.NewGuid(),
 				userId,
 				title,
 				url,
-				tags,
 				DateTime.UtcNow);
 
 			await _photosRepository.Add(photo);
+			return photo.Id;
 		}
 
 		public async Task<PhotoDto> GetById(Guid id)
@@ -71,11 +71,11 @@ namespace Lumix.Application.Services
 				bool isMatch = true;
 				foreach (var tag in tagsArray)
 				{
-					if (!photo.Tags.Contains(tag))
+					/*if (!photo.Tags.Contains(tag))
 					{
 						isMatch = false;
 						break;
-					}
+					}*/
 				}
 
 				if (!isMatch)
