@@ -13,6 +13,8 @@ namespace Lumix.Persistence
 		public DbSet<Comment> Comments { get; set; }
 		public DbSet<Follow> Follows { get; set; }
 		public DbSet<RefreshToken> RefreshTokens { get; set; }
+		public DbSet<Tag> Tags { get; set; }
+		public DbSet<PhotoTag> PhotoTags { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
