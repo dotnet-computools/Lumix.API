@@ -17,5 +17,7 @@ public class DataBaseMappings : Profile
         CreateMap<Like, LikeDto>();
         CreateMap<Comment, CommentDto>();
         CreateMap<Follow, FollowDto>();
+        CreateMap<Tag, TagDto>();
+        CreateMap<PhotoTag, PhotoTagDto>();
     }
 }
