@@ -6,5 +6,6 @@ namespace Lumix.Core.Interfaces.Services
 	{
 		Task AddNew(Guid tagId, Guid photoId);
 		Task AddNewRange(IEnumerable<TagDto> photoTags, Guid photoId);
+		Task<IEnumerable<PhotoTagDto>> GetAllByPhotoId(Guid photoId);
 	}
 }

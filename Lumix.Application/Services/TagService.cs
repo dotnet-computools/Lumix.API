@@ -12,6 +12,7 @@ namespace Lumix.Application.Services
 		{
 			_tagsRepository = tagsRepository;
 		}
+
 		public async Task CheckAndAddNewTags(IEnumerable<string> tags)
 		{
 			var newTagStrings = await GetNewTagStrings(tags);
@@ -36,6 +37,19 @@ namespace Lumix.Application.Services
 
 				tagList.Add(tag);
 			}
+			return tagList;
+		}
+
+		public async Task<IEnumerable<TagDto>> GetAllByPhotoTags(IEnumerable<PhotoTagDto> photoTags)
+		{
+			var tagList = new List<TagDto>();
+
+			foreach (var tagItem in photoTags)
+			{
+				var tag = await _tagsRepository.GetById(tagItem.TagId);
+				tagList.Add(tag);
+			}
+
 			return tagList;
 		}
 

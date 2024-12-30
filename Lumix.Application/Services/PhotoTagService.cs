@@ -41,5 +41,12 @@ namespace Lumix.Application.Services
 
 			await _photoTagRepository.AddRange(newPhotoTagsList);
 		}
+
+		public async Task<IEnumerable<PhotoTagDto>> GetAllByPhotoId(Guid photoId)
+		{
+			var photoTags = await _photoTagRepository.GetByPhotoId(photoId);
+
+			return photoTags;
+		}
 	}
 }

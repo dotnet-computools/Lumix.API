@@ -2,6 +2,7 @@
 using Lumix.Core.DTOs;
 using Lumix.Core.Interfaces.Repositories;
 using Lumix.Persistence.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lumix.Persistence.Repositories
 {
@@ -49,6 +50,16 @@ namespace Lumix.Persistence.Repositories
 
 			await _context.PhotoTags.AddRangeAsync(photoTagsEntities);
 			await _context.SaveChangesAsync();
+		}
+
+		public async Task<IEnumerable<PhotoTagDto>> GetByPhotoId(Guid photoId)
+		{
+			var photoTags = await _context.PhotoTags
+				.AsNoTracking()
+				.Where(pt => pt.PhotoId == photoId)
+				.ToListAsync() ?? throw new InvalidOperationException("Tags not found.");
+
+			return _mapper.Map<IEnumerable<PhotoTagDto>>(photoTags);
 		}
 	}
 }

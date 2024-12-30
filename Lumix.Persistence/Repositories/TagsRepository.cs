@@ -55,5 +55,11 @@ namespace Lumix.Persistence.Repositories
 			var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Name == name);
 			return _mapper.Map<TagDto>(tag);
 		}
+
+		public async Task<TagDto> GetById(Guid id)
+		{
+			var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Id == id);
+			return _mapper.Map<TagDto>(tag);
+		}
 	}
 }

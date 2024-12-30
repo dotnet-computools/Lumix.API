@@ -7,5 +7,6 @@ namespace Lumix.Core.Interfaces.Repositories
 		Task Add(TagDto tag);
 		Task AddRange(IEnumerable<TagDto> tags);
 		Task<TagDto?> GetByName(string name);
+		Task<TagDto> GetById(Guid id);
 	}
 }
