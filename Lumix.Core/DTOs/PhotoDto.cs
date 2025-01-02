@@ -49,8 +49,7 @@ namespace Lumix.Core.DTOs
 		}
 
 		public void Update(
-			string title,
-			string tags)
+			string title)
 		{
 			if (string.IsNullOrEmpty(title)) throw new ArgumentException("Title cannot be empty");
 			if (title.Length > 200) throw new ArgumentException("Caption can't be longer than 500 characters");

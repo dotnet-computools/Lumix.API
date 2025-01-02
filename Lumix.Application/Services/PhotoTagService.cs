@@ -7,10 +7,12 @@ namespace Lumix.Application.Services
 	public class PhotoTagService : IPhotoTagService
 	{
 		private readonly IPhotoTagsRepository _photoTagRepository;
+		private readonly ITagsRepository _tagsRepository;
 
-		public PhotoTagService(IPhotoTagsRepository photoTagsRepository)
+		public PhotoTagService(IPhotoTagsRepository photoTagsRepository, ITagsRepository tagsRepository)
 		{
 			_photoTagRepository = photoTagsRepository;
+			_tagsRepository = tagsRepository;
 		}
 
 		public async Task AddNew(Guid tagId, Guid photoId)
@@ -47,6 +49,11 @@ namespace Lumix.Application.Services
 			var photoTags = await _photoTagRepository.GetByPhotoId(photoId);
 
 			return photoTags;
+		}
+
+		public async Task RemoveAllByPhotoId(Guid photoId)
+		{
+			await _photoTagRepository.DeleteAllByPhotoId(photoId);
 		}
 	}
 }

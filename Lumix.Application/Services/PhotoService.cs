@@ -48,9 +48,9 @@ namespace Lumix.Application.Services
 			return photo != null;
 		}
 
-		public async Task UpdateInfo(PhotoDto photoToUpdate, string newTitle, string newTags)
+		public async Task UpdateInfo(PhotoDto photoToUpdate, string newTitle)
 		{
-			photoToUpdate.Update(newTitle, newTags);
+			photoToUpdate.Update(newTitle);
 
 			await _photosRepository.Update(photoToUpdate);
 		}

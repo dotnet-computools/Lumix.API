@@ -34,10 +34,9 @@ namespace Lumix.API.Controllers
 				await _tagService.CheckAndAddNewTags(uploadRequest.Tags ?? throw new NullReferenceException("Tags can't be empty"));
 				var tags = await _tagService.GetAllTagsFromStrings(uploadRequest.Tags);
 
-				
-
 				//s3 upload logic
 				var newPhotoId = await _photoService.Upload(uploadRequest.Title, url: "empty", userId);
+
 				await _photoTagService.AddNewRange(tags, newPhotoId);
 
 				return Ok();
@@ -134,30 +133,15 @@ namespace Lumix.API.Controllers
 				}
 
 				var photo = await _photoService.GetById(id);
-				await _photoService.UpdateInfo(photo, updateRequest.Title, updateRequest.Tags);
+				await _photoService.UpdateInfo(photo, updateRequest.Title);
+
+				await _tagService.CheckAndAddNewTags(updateRequest.Tags ?? throw new NullReferenceException("Tags can't be empty"));
+				var oldTags = await _tagService.GetAllTagsFromStrings(updateRequest.Tags);
+
+				await _photoTagService.RemoveAllByPhotoId(photo.Id);
+				var newPhotoTags = _photoTagService.AddNewRange(oldTags, id);
 
 				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(ex.Message);
-			}
-		}
-
-		[HttpGet("search")]
-		public async Task<IActionResult> SearchByTags([FromQuery] string tags)
-		{
-			try
-			{
-				var userId = HttpContext.GetUserId() ?? Guid.Empty;
-				if (userId == Guid.Empty)
-				{
-					return Unauthorized();
-				}
-
-				var result = await _photoService.GetByTags(tags);
-				return Ok(result);
-
 			}
 			catch (Exception ex)
 			{

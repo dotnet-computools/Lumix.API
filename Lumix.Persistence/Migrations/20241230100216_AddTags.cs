@@ -180,7 +180,7 @@ namespace Lumix.Persistence.Migrations
                         column: x => x.PhotoId,
                         principalTable: "Photos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PhotoTags_Tags_TagId",
                         column: x => x.TagId,
