@@ -148,5 +148,28 @@ namespace Lumix.API.Controllers
 				return BadRequest(ex.Message);
 			}
 		}
+
+		[HttpGet("search")]
+		public async Task<IActionResult> SearchByTags([FromQuery] IEnumerable<string> tagsNames)
+		{
+			try
+			{
+				var userId = HttpContext.GetUserId() ?? Guid.Empty;
+				if (userId == Guid.Empty)
+				{
+					return Unauthorized();
+				}
+
+				var tags = await _tagService.GetAllTagsFromStrings(tagsNames);
+				var photosId = await _photoTagService.GetPhotosIdByTagsId(tags.Select(t => t.Id));
+				var photos = await _photoService.GetById(photosId);
+
+				return Ok(photos);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
 	}
 }

@@ -62,6 +62,15 @@ namespace Lumix.Persistence.Repositories
 			return _mapper.Map<IEnumerable<PhotoTagDto>>(photoTags);
 		}
 
+		public async Task<IEnumerable<PhotoTagDto>> GetAll()
+		{
+			var photoTags = await _context.PhotoTags
+				.AsNoTracking()
+				.ToListAsync();
+
+			return _mapper.Map<IEnumerable<PhotoTagDto>>(photoTags);
+		}
+
 		public async Task DeleteAllByPhotoId(Guid photoId)
 		{
 			var photoTagsToDelete = await _context.PhotoTags.Where(pt => pt.PhotoId == photoId).ToListAsync();

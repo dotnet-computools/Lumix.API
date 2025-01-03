@@ -31,6 +31,24 @@ namespace Lumix.Application.Services
 			return await _photosRepository.GetById(id);
 		}
 
+		public async Task<IEnumerable<PhotoDto>> GetById(IEnumerable<Guid> photosId)
+		{
+			var photos = new List<PhotoDto>();
+
+			foreach (var photoIdItem in photosId)
+			{
+				var photo = await _photosRepository.GetById(photoIdItem);
+				
+				if (photo == null)
+				{
+					continue;
+				}
+				photos.Add(photo);
+			}
+
+			return photos;
+		}
+
 		public async Task<IEnumerable<PhotoDto>> GetAll()
 		{
 			return await _photosRepository.GetAll();
@@ -58,44 +76,6 @@ namespace Lumix.Application.Services
 		public async Task Delete(Guid id)
 		{
 			await _photosRepository.DeleteById(id);
-		}
-
-		public async Task<IEnumerable<PhotoDto>> GetByTags(string tags)
-		{
-			var tagsArray = ConvertTagsToArray(tags);
-			var allPhotos = await _photosRepository.GetAll();
-			var photosByTags = new List<PhotoDto>();
-
-			foreach (var photo in allPhotos)
-			{
-				bool isMatch = true;
-				foreach (var tag in tagsArray)
-				{
-					/*if (!photo.Tags.Contains(tag))
-					{
-						isMatch = false;
-						break;
-					}*/
-				}
-
-				if (!isMatch)
-				{
-					continue;
-				}
-
-				photosByTags.Add(photo);
-			}
-
-			return photosByTags;
-		}
-
-		private IEnumerable<string> ConvertTagsToArray(string tags)
-		{
-			var tagsArray = tags
-				.Split(' ')
-				.Select(tag => tag.ToLower())
-				.ToArray();
-			return tagsArray;
 		}
 	}
 }

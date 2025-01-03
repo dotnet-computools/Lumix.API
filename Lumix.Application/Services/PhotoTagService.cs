@@ -51,6 +51,35 @@ namespace Lumix.Application.Services
 			return photoTags;
 		}
 
+		public async Task<IEnumerable<Guid>> GetPhotosIdByTagsId(IEnumerable<Guid> tagsId)
+		{
+			var allPhotoTags = await _photoTagRepository.GetAll();
+			var allPhotosId = allPhotoTags.Select(pt => pt.PhotoId).Distinct();
+			var matchedPhotosId = new List<Guid>();
+
+			foreach (var photoId in allPhotosId)
+			{
+				bool isMatch = true;
+				foreach (var tag in tagsId)
+				{
+					if (allPhotoTags
+						.Where(pt => pt.PhotoId == photoId && pt.TagId == tag)
+						.FirstOrDefault() == null)
+					{
+						isMatch = false;
+						break;
+					}
+				}
+
+				if (!isMatch)
+				{
+					continue;
+				}
+				matchedPhotosId.Add(photoId);
+			}
+			return matchedPhotosId;
+		}
+
 		public async Task RemoveAllByPhotoId(Guid photoId)
 		{
 			await _photoTagRepository.DeleteAllByPhotoId(photoId);

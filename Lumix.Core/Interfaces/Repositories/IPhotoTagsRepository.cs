@@ -7,6 +7,7 @@ namespace Lumix.Core.Interfaces.Repositories
 		Task Add(PhotoTagDto photoTag);
 		Task AddRange(IEnumerable<PhotoTagDto> photoTags);
 		Task<IEnumerable<PhotoTagDto>> GetByPhotoId(Guid photoId);
+		Task<IEnumerable<PhotoTagDto>> GetAll();
 		Task DeleteAllByPhotoId(Guid photoId);
 	}
 }
