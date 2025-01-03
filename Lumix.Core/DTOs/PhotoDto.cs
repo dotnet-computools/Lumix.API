@@ -43,7 +43,7 @@ namespace Lumix.Core.DTOs
 		{
 			if (string.IsNullOrEmpty(title)) throw new ArgumentException("Title cannot be empty");
 			if (string.IsNullOrEmpty(url)) throw new ArgumentException("URL cannot be empty");
-			if (title.Length > 200) throw new ArgumentException("Caption can't be longer than 500 characters");
+			if (title.Length > 200) throw new ArgumentException("Title can't be longer than 500 characters");
 
 			return new PhotoDto(id, userId, title, url, createdAt);
 		}

@@ -12,7 +12,6 @@
 			UserId = userId;
 			PhotoId = photoId;
 			Text = text;
-			CreatedAt = DateTime.UtcNow;
 		}
 
 		public Guid Id { get; }
@@ -28,6 +27,7 @@
 			string text)
 		{
 			if (string.IsNullOrEmpty(text)) throw new ArgumentException("Comment text cannot be empty");
+			if (text.Length > 1000) throw new ArgumentException("Comment text cannot be longer than 1000 characters");
 
 			return new CommentDto(id, userId, photoId, text);
 		}

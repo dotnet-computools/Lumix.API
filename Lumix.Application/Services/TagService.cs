@@ -15,10 +15,11 @@ namespace Lumix.Application.Services
 
 		public async Task CheckAndAddNewTags(IEnumerable<string> tags)
 		{
-			var newTagStrings = await GetNewTagStrings(tags);
-			if (newTagStrings != null)
+			var uniqueTags = tags.Distinct();
+			var newTagsNames = await GetNewTagsNames(uniqueTags);
+			if (newTagsNames != null)
 			{
-				var newTags = ConvertToTags(newTagStrings);
+				var newTags = ConvertToTags(newTagsNames);
 				await _tagsRepository.AddRange(newTags);
 			}
 		}
@@ -53,7 +54,7 @@ namespace Lumix.Application.Services
 			return tagList;
 		}
 
-		private async Task<IEnumerable<string>> GetNewTagStrings(IEnumerable<string> tags)
+		private async Task<IEnumerable<string>> GetNewTagsNames(IEnumerable<string> tags)
 		{
 			var newTags = new List<string>();
 			foreach (var tagItem in tags)
