@@ -22,7 +22,7 @@ namespace Lumix.API.Controllers
 			try
 			{
 				var photoTags = await _photoTagService.GetAllByPhotoId(id);
-				var tags = await _tagService.GetAllByPhotoTags(photoTags);
+				var tags = _tagService.GetAllByPhotoTagsByInclude(photoTags);
 
 				return Ok(tags);
 			}

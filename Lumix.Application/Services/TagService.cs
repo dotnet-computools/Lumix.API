@@ -54,7 +54,16 @@ namespace Lumix.Application.Services
 			return tagList;
 		}
 
-		private async Task<IEnumerable<string>> GetNewTagsNames(IEnumerable<string> tags)
+        public IEnumerable<TagDto> GetAllByPhotoTagsByInclude(IEnumerable<PhotoTagDto> photoTags)
+        {
+            var tags = photoTags
+                .Select(x => x.Tag)
+                .Select(tag => TagDto.Create(tag.Id, tag.Name, tag.CreatedAt));
+
+            return tags;
+        }
+
+        private async Task<IEnumerable<string>> GetNewTagsNames(IEnumerable<string> tags)
 		{
 			var newTags = new List<string>();
 			foreach (var tagItem in tags)

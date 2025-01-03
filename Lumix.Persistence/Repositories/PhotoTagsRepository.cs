@@ -57,6 +57,7 @@ namespace Lumix.Persistence.Repositories
 			var photoTags = await _context.PhotoTags
 				.AsNoTracking()
 				.Where(pt => pt.PhotoId == photoId)
+                .Include(x => x.Tag)
 				.ToListAsync() ?? throw new InvalidOperationException("Tags not found.");
 
 			return _mapper.Map<IEnumerable<PhotoTagDto>>(photoTags);
