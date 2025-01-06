@@ -3,6 +3,6 @@
 	public class UpdateRequest
 	{
 		public string Title { get; set; } = string.Empty;
-		public string Tags { get; set; } = string.Empty;
+		public IEnumerable<string>? Tags { get; set; }
 	}
 }

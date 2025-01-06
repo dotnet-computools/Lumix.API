@@ -6,13 +6,13 @@ namespace Lumix.Core.DTOs
 	{
 		private readonly List<LikeDto> _likes = new();
 		private readonly List<CommentDto> _comments = new();
+		private readonly List<PhotoTagDto> _photoTags = new();
 
 		private PhotoDto(
 			Guid id,
 			Guid userId,
 			string title,
 			string url,
-			string tags,
 			DateTime createdAt)
 		{
 			Id = id;
@@ -20,7 +20,6 @@ namespace Lumix.Core.DTOs
 			Title = title;
 			Url = url;
 			CreatedAt = createdAt;
-			Tags = tags;
 			LikeCount = 0;
 		}
 
@@ -29,40 +28,33 @@ namespace Lumix.Core.DTOs
 		public string Title { get; private set; } = string.Empty;
 		public string Url { get; } = string.Empty;
 		public DateTime CreatedAt { get; }
-		public string Tags { get; private set; }
 		public int LikeCount { get; private set; }
 
 		public IReadOnlyList<LikeDto> Likes => _likes;
 		public IReadOnlyList<CommentDto> Comments => _comments;
+		public IReadOnlyList<PhotoTagDto> PhotoTags => _photoTags;
 
 		public static PhotoDto Create(
 			Guid id,
 			Guid userId,
 			string title,
 			string url,
-			string tags,
 			DateTime createdAt)
 		{
 			if (string.IsNullOrEmpty(title)) throw new ArgumentException("Title cannot be empty");
 			if (string.IsNullOrEmpty(url)) throw new ArgumentException("URL cannot be empty");
-			if (string.IsNullOrEmpty(tags)) throw new ArgumentException("Tags cannot be empty");
-			if (title.Length > 200) throw new ArgumentException("Caption can't be longer than 500 characters");
-			if (tags.Length > 500) throw new ArgumentException("Tags can't be longer than 500 characters");
+			if (title.Length > 200) throw new ArgumentException("Title can't be longer than 500 characters");
 
-			return new PhotoDto(id, userId, title, url, tags, createdAt);
+			return new PhotoDto(id, userId, title, url, createdAt);
 		}
 
 		public void Update(
-			string title,
-			string tags)
+			string title)
 		{
 			if (string.IsNullOrEmpty(title)) throw new ArgumentException("Title cannot be empty");
-			if (string.IsNullOrEmpty(tags)) throw new ArgumentException("Tags cannot be empty");
 			if (title.Length > 200) throw new ArgumentException("Caption can't be longer than 500 characters");
-			if (tags.Length > 500) throw new ArgumentException("Tags can't be longer than 500 characters");
 
 			Title = title;
-			Tags = tags;
 		}
 
 		public void IncrementLikeCount() => LikeCount++;

@@ -4,6 +4,6 @@
 	{
 		public IFormFile? PhotoFile { get; set; }
 		public string Title { get; set; } = string.Empty;
-		public string Tags { get; set; } = string.Empty;
+		public IEnumerable<string>? Tags { get; set; }
 	}
 }

@@ -10,10 +10,14 @@ namespace Lumix.API.Controllers
 	public class PhotoController : Controller
 	{
 		private readonly IPhotoService _photoService;
+		private readonly ITagService _tagService;
+		private readonly IPhotoTagService _photoTagService;
 
-		public PhotoController(IPhotoService photoService)
+		public PhotoController(IPhotoService photoService, ITagService service, IPhotoTagService photoTagService)
 		{
 			_photoService = photoService;
+			_tagService = service;
+			_photoTagService = photoTagService;
 		}
 
 		[HttpPost("upload")]
@@ -27,8 +31,14 @@ namespace Lumix.API.Controllers
 					return Unauthorized();
 				}
 
+				await _tagService.CheckAndAddNewTags(uploadRequest.Tags ?? Enumerable.Empty<string>());
+				var tags = await _tagService.GetAllTagsFromStrings(uploadRequest.Tags ?? Enumerable.Empty<string>());
+
 				//s3 upload logic
-				await _photoService.Upload(uploadRequest.Title, uploadRequest.Tags, url: "empty", userId);
+				var newPhotoId = await _photoService.Upload(uploadRequest.Title, url: "empty", userId);
+
+				await _photoTagService.AddNewRange(tags, newPhotoId);
+
 				return Ok();
 			}
 			catch (Exception ex)
@@ -123,7 +133,13 @@ namespace Lumix.API.Controllers
 				}
 
 				var photo = await _photoService.GetById(id);
-				await _photoService.UpdateInfo(photo, updateRequest.Title, updateRequest.Tags);
+				await _photoService.UpdateInfo(photo, updateRequest.Title);
+
+				await _tagService.CheckAndAddNewTags(updateRequest.Tags ?? Enumerable.Empty<string>());
+				var oldTags = await _tagService.GetAllTagsFromStrings(updateRequest.Tags ?? Enumerable.Empty<string>());
+
+				await _photoTagService.RemoveAllByPhotoId(photo.Id);
+				var newPhotoTags = _photoTagService.AddNewRange(oldTags, id);
 
 				return Ok();
 			}
@@ -134,7 +150,7 @@ namespace Lumix.API.Controllers
 		}
 
 		[HttpGet("search")]
-		public async Task<IActionResult> SearchByTags([FromQuery] string tags)
+		public async Task<IActionResult> SearchByTags([FromQuery] IEnumerable<string> tagsNames)
 		{
 			try
 			{
@@ -144,9 +160,11 @@ namespace Lumix.API.Controllers
 					return Unauthorized();
 				}
 
-				var result = await _photoService.GetByTags(tags);
-				return Ok(result);
+				var tags = await _tagService.GetAllTagsFromStrings(tagsNames);
+				var photosId = await _photoTagService.GetPhotosIdByTagsId(tags.Select(t => t.Id));
+				var photos = await _photoService.GetByIds(photosId);
 
+				return Ok(photos);
 			}
 			catch (Exception ex)
 			{

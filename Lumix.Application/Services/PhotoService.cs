@@ -13,22 +13,35 @@ namespace Lumix.Application.Services
 			_photosRepository = photosRepository;
 		}
 
-		public async Task Upload(string title, string tags, string url, Guid userId)
+		public async Task<Guid> Upload(string title, string url, Guid userId)
 		{
 			var photo = PhotoDto.Create(
 				Guid.NewGuid(),
 				userId,
 				title,
 				url,
-				tags,
 				DateTime.UtcNow);
 
 			await _photosRepository.Add(photo);
+			return photo.Id;
 		}
 
 		public async Task<PhotoDto> GetById(Guid id)
 		{
 			return await _photosRepository.GetById(id);
+		}
+
+		public async Task<IEnumerable<PhotoDto>> GetByIds(IEnumerable<Guid> photosId)
+		{
+			var photos = new List<PhotoDto>();
+
+			foreach (var photoIdItem in photosId)
+			{
+				var photo = await _photosRepository.GetById(photoIdItem);
+				photos.Add(photo);
+			}
+
+			return photos;
 		}
 
 		public async Task<IEnumerable<PhotoDto>> GetAll()
@@ -48,9 +61,9 @@ namespace Lumix.Application.Services
 			return photo != null;
 		}
 
-		public async Task UpdateInfo(PhotoDto photoToUpdate, string newTitle, string newTags)
+		public async Task UpdateInfo(PhotoDto photoToUpdate, string newTitle)
 		{
-			photoToUpdate.Update(newTitle, newTags);
+			photoToUpdate.Update(newTitle);
 
 			await _photosRepository.Update(photoToUpdate);
 		}
@@ -58,44 +71,6 @@ namespace Lumix.Application.Services
 		public async Task Delete(Guid id)
 		{
 			await _photosRepository.DeleteById(id);
-		}
-
-		public async Task<IEnumerable<PhotoDto>> GetByTags(string tags)
-		{
-			var tagsArray = ConvertTagsToArray(tags);
-			var allPhotos = await _photosRepository.GetAll();
-			var photosByTags = new List<PhotoDto>();
-
-			foreach (var photo in allPhotos)
-			{
-				bool isMatch = true;
-				foreach (var tag in tagsArray)
-				{
-					if (!photo.Tags.Contains(tag))
-					{
-						isMatch = false;
-						break;
-					}
-				}
-
-				if (!isMatch)
-				{
-					continue;
-				}
-
-				photosByTags.Add(photo);
-			}
-
-			return photosByTags;
-		}
-
-		private IEnumerable<string> ConvertTagsToArray(string tags)
-		{
-			var tagsArray = tags
-				.Split(' ')
-				.Select(tag => tag.ToLower())
-				.ToArray();
-			return tagsArray;
 		}
 	}
 }

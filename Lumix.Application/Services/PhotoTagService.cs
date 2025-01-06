@@ -1,0 +1,86 @@
+﻿using Lumix.Core.DTOs;
+using Lumix.Core.Interfaces.Repositories;
+using Lumix.Core.Interfaces.Services;
+
+namespace Lumix.Application.Services
+{
+	public class PhotoTagService : IPhotoTagService
+	{
+		private readonly IPhotoTagsRepository _photoTagRepository;
+		private readonly ITagsRepository _tagsRepository;
+
+		public PhotoTagService(IPhotoTagsRepository photoTagsRepository, ITagsRepository tagsRepository)
+		{
+			_photoTagRepository = photoTagsRepository;
+			_tagsRepository = tagsRepository;
+		}
+
+		public async Task AddNew(Guid tagId, Guid photoId)
+		{
+			var newPhotoTag = PhotoTagDto.Create(
+				Guid.NewGuid(),
+				tagId,
+				photoId,
+				DateTime.UtcNow);
+
+			await _photoTagRepository.Add(newPhotoTag);
+		}
+
+		public async Task AddNewRange(IEnumerable<TagDto> photoTags, Guid photoId)
+		{
+			var newPhotoTagsList = new List<PhotoTagDto>();
+
+			foreach (var photoTag in photoTags)
+			{
+				var newPhotoTag = PhotoTagDto.Create(
+					Guid.NewGuid(),
+					photoTag.Id,
+					photoId,
+					DateTime.UtcNow);
+
+				newPhotoTagsList.Add(newPhotoTag);
+			}
+
+			await _photoTagRepository.AddRange(newPhotoTagsList);
+		}
+
+		public async Task<IEnumerable<PhotoTagDto>> GetAllByPhotoId(Guid photoId)
+		{
+			var photoTags = await _photoTagRepository.GetByPhotoId(photoId);
+
+			return photoTags;
+		}
+
+		public async Task<IEnumerable<Guid>> GetPhotosIdByTagsId(IEnumerable<Guid> tagsId)
+		{
+			var allPhotoTags = await _photoTagRepository.GetAll();
+			var allPhotosId = allPhotoTags.Select(pt => pt.PhotoId).Distinct();
+			var matchedPhotosId = new List<Guid>();
+
+			foreach (var photoId in allPhotosId)
+			{
+				bool isMatch = true;
+				foreach (var tag in tagsId)
+				{
+					if (!allPhotoTags.Any(pt => pt.PhotoId == photoId && pt.TagId == tag))
+					{
+						isMatch = false;
+						break;
+					}
+				}
+
+				if (!isMatch)
+				{
+					continue;
+				}
+				matchedPhotosId.Add(photoId);
+			}
+			return matchedPhotosId;
+		}
+
+		public async Task RemoveAllByPhotoId(Guid photoId)
+		{
+			await _photoTagRepository.DeleteAllByPhotoId(photoId);
+		}
+	}
+}

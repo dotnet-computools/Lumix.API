@@ -24,8 +24,6 @@ namespace Lumix.Persistence.Repositories
 				Id = photo.Id,
 				UserId = photo.UserId,
 				Title = photo.Title,
-				Url = photo.Url,
-				Tags = photo.Tags,
 				CreatedAt = photo.CreatedAt,
 				LikeCount = photo.LikeCount,
 			};
@@ -92,7 +90,6 @@ namespace Lumix.Persistence.Repositories
 				Title = photo.Title,
 				Url = photo.Url,
 				CreatedAt = photo.CreatedAt,
-				Tags = photo.Tags,
 				LikeCount = photo.LikeCount
 			};
 
