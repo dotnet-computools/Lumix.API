@@ -31,18 +31,13 @@ namespace Lumix.Application.Services
 			return await _photosRepository.GetById(id);
 		}
 
-		public async Task<IEnumerable<PhotoDto>> GetById(IEnumerable<Guid> photosId)
+		public async Task<IEnumerable<PhotoDto>> GetByIds(IEnumerable<Guid> photosId)
 		{
 			var photos = new List<PhotoDto>();
 
 			foreach (var photoIdItem in photosId)
 			{
 				var photo = await _photosRepository.GetById(photoIdItem);
-				
-				if (photo == null)
-				{
-					continue;
-				}
 				photos.Add(photo);
 			}
 

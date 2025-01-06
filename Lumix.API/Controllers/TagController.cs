@@ -16,12 +16,12 @@ namespace Lumix.API.Controllers
 			_photoTagService = photoTagService;
 		}
 
-		[HttpGet("{id:guid}/tags")]
-		public async Task<IActionResult> GetTags(Guid id)
+		[HttpGet("{photoId:guid}/tags")]
+		public async Task<IActionResult> GetTags(Guid photoId)
 		{
 			try
 			{
-				var photoTags = await _photoTagService.GetAllByPhotoId(id);
+				var photoTags = await _photoTagService.GetAllByPhotoId(photoId);
 				var tags = _tagService.GetAllByPhotoTagsByInclude(photoTags);
 
 				return Ok(tags);

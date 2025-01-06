@@ -4,7 +4,7 @@ namespace Lumix.Core.DTOs
 {
 	public class TagDto
 	{
-		private const string PATTERN = @"^#[a-zA-Z0-9]{0,29}$";
+		private const string PATTERN = @"^#[a-zA-Z0-9]{1,29}$";
 		private readonly List<PhotoTagDto> _photoTags = new();
 
 		private TagDto(

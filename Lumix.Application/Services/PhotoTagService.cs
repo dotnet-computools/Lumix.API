@@ -62,9 +62,7 @@ namespace Lumix.Application.Services
 				bool isMatch = true;
 				foreach (var tag in tagsId)
 				{
-					if (allPhotoTags
-						.Where(pt => pt.PhotoId == photoId && pt.TagId == tag)
-						.FirstOrDefault() == null)
+					if (!allPhotoTags.Any(pt => pt.PhotoId == photoId && pt.TagId == tag))
 					{
 						isMatch = false;
 						break;

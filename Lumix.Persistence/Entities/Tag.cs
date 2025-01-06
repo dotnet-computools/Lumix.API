@@ -6,6 +6,6 @@
 		public string Name { get; set; } = string.Empty;
 		public DateTime CreatedAt { get; set; }
 
-		public List<PhotoTag> PhotoTags { get; set; } = [];
+		public List<PhotoTag> PhotoTags { get; set; } = new();
 	}
 }

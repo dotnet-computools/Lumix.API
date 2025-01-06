@@ -17,7 +17,7 @@ namespace Lumix.Application.Services
 		{
 			var uniqueTags = tags.Distinct();
 			var newTagsNames = await GetNewTagsNames(uniqueTags);
-			if (newTagsNames != null)
+			if (newTagsNames.Any())
 			{
 				var newTags = ConvertToTags(newTagsNames);
 				await _tagsRepository.AddRange(newTags);

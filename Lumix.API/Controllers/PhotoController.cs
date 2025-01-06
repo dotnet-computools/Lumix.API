@@ -31,8 +31,8 @@ namespace Lumix.API.Controllers
 					return Unauthorized();
 				}
 
-				await _tagService.CheckAndAddNewTags(uploadRequest.Tags ?? throw new NullReferenceException("Tags can't be empty"));
-				var tags = await _tagService.GetAllTagsFromStrings(uploadRequest.Tags);
+				await _tagService.CheckAndAddNewTags(uploadRequest.Tags ?? Enumerable.Empty<string>());
+				var tags = await _tagService.GetAllTagsFromStrings(uploadRequest.Tags ?? Enumerable.Empty<string>());
 
 				//s3 upload logic
 				var newPhotoId = await _photoService.Upload(uploadRequest.Title, url: "empty", userId);
@@ -135,8 +135,8 @@ namespace Lumix.API.Controllers
 				var photo = await _photoService.GetById(id);
 				await _photoService.UpdateInfo(photo, updateRequest.Title);
 
-				await _tagService.CheckAndAddNewTags(updateRequest.Tags ?? throw new NullReferenceException("Tags can't be empty"));
-				var oldTags = await _tagService.GetAllTagsFromStrings(updateRequest.Tags);
+				await _tagService.CheckAndAddNewTags(updateRequest.Tags ?? Enumerable.Empty<string>());
+				var oldTags = await _tagService.GetAllTagsFromStrings(updateRequest.Tags ?? Enumerable.Empty<string>());
 
 				await _photoTagService.RemoveAllByPhotoId(photo.Id);
 				var newPhotoTags = _photoTagService.AddNewRange(oldTags, id);
@@ -162,7 +162,7 @@ namespace Lumix.API.Controllers
 
 				var tags = await _tagService.GetAllTagsFromStrings(tagsNames);
 				var photosId = await _photoTagService.GetPhotosIdByTagsId(tags.Select(t => t.Id));
-				var photos = await _photoService.GetById(photosId);
+				var photos = await _photoService.GetByIds(photosId);
 
 				return Ok(photos);
 			}
