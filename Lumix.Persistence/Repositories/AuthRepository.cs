@@ -95,7 +95,6 @@ public class AuthRepository : IAuthRepository
     public async Task<string> RefreshToken(string token)
     {
         var refreshTokenEntity = await _context.RefreshTokens
-            .AsNoTracking()
             .FirstOrDefaultAsync(rt => rt.Token == token);
 
         if (refreshTokenEntity == null)
@@ -109,7 +108,6 @@ public class AuthRepository : IAuthRepository
         }
 
         var userEntity = await _context.Users
-            .AsNoTracking()
             .Include(u => u.RefreshTokens)
             .FirstOrDefaultAsync(u => u.RefreshTokens.Any(rt => rt.Token == token && rt.ExpiresAt > DateTime.UtcNow));
 

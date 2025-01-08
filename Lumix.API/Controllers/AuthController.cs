@@ -1,7 +1,9 @@
 
+using Lumix.API.Contracts.Request.AuthRequest;
 using Lumix.API.Extensions;
 using Lumix.Application.Auth;
 using Lumix.Core.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lumix.API.Controllers
@@ -21,6 +23,7 @@ namespace Lumix.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
+            
             try
             {
                 await _authService.Register(request.UserName, request.Email, request.Password);
@@ -71,8 +74,7 @@ namespace Lumix.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
-        [HttpGet]
+        [HttpGet("get-current-user")]
         public IActionResult GetProfile()
         {
             var userId = HttpContext.GetUserId();
@@ -84,23 +86,16 @@ namespace Lumix.API.Controllers
 
             return Ok(new { UserId = userId.Value });
         }
-    }
+        [Authorize]
+        [HttpPost("logout")]
+        public IActionResult LogoutUser()
+        {
+            if (HttpContext.Request.Cookies.ContainsKey("accessToken"))
+            {
+                HttpContext.Response.Cookies.Delete("accessToken");
+            }
 
-    public class RegisterRequest
-    {
-        public string UserName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-    }
-
-    public class LoginRequest
-    {
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-    }
-
-    public class RefreshTokenRequest
-    {
-        public string RefreshToken { get; set; } = string.Empty;
+            return Ok("User has been logged out successfully.");
+        }
     }
 }

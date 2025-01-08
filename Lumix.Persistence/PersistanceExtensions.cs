@@ -1,4 +1,5 @@
 using Lumix.Core.Interfaces.Repositories;
+using Lumix.Core.Interfaces.Services;
 using Lumix.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +17,7 @@ namespace Lumix.Persistence
             });
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IFollowRepository, FollowRepository>();
             return services;
         }
     }

@@ -22,8 +22,4 @@
     <ProjectReference Include="..\Lumix.Persistence\Lumix.Persistence.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Contracts\" />
-  </ItemGroup>
-
 </Project>

@@ -10,11 +10,7 @@ namespace Lumix.API.Extensions;
 
 public static class ApiExtensions
 {
-    public static void AddMappedEndpoints(this IEndpointRouteBuilder app)
-    {
-        
-
-    }
+    public static void AddMappedEndpoints(this IEndpointRouteBuilder app) { }
     
     public static void AddApiAuthentication(
         this IServiceCollection services,
@@ -50,6 +46,19 @@ public static class ApiExtensions
                     {
                         context.Token = context.Request.Cookies["accessToken"];
 
+                        return Task.CompletedTask;
+                    },
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception is SecurityTokenExpiredException)
+                        {
+                            context.Response.Cookies.Delete("accessToken", new CookieOptions
+                            {
+                                HttpOnly = true,
+                                Secure = true,
+                                SameSite = SameSiteMode.Strict
+                            });
+                        }
                         return Task.CompletedTask;
                     }
                 };
