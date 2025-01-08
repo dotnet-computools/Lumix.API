@@ -18,9 +18,6 @@ namespace Lumix.Persistence.Configurations
 				.IsRequired()
 				.HasMaxLength(500);
 
-			builder.Property(p => p.Tags)
-				.HasMaxLength(500);
-
 			
 			builder.HasOne(p => p.User)
 				.WithMany(u => u.Photos)
@@ -35,6 +32,11 @@ namespace Lumix.Persistence.Configurations
 			builder.HasMany(p => p.Comments)
 				.WithOne(c => c.Photo)
 				.HasForeignKey(c => c.PhotoId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			builder.HasMany(p => p.PhotoTags)
+				.WithOne(pt => pt.Photo)
+				.HasForeignKey(pt => pt.TagId)
 				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}

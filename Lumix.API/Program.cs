@@ -1,5 +1,5 @@
 using System.Text;
-
+using System.Text.Json.Serialization;
 using Lumix.API.Extensions;
 using Lumix.API.Infrastructure;
 using Lumix.Application;
@@ -29,7 +29,7 @@ services.AddHttpContextAccessor();
 services.AddApiAuthentication(configuration);
 services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
-services.AddControllers();
+services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 services.AddApplication();
 services.AddInfrastructure();
