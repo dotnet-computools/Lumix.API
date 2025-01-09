@@ -1,4 +1,5 @@
 using Lumix.Core.Interfaces.Repositories;
+using Lumix.Core.Interfaces.Services;
 using Lumix.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,7 +22,8 @@ namespace Lumix.Persistence
             services.AddScoped<ICommentsRepository, CommentsRepository>();
             services.AddScoped<ITagsRepository, TagsRepository>();
             services.AddScoped<IPhotoTagsRepository, PhotoTagsRepository>();
-			return services;
+            services.AddScoped<IFollowRepository, FollowRepository>();
+            return services;
         }
     }
 }

@@ -4,6 +4,7 @@ using Lumix.API.Extensions;
 using Lumix.API.Infrastructure;
 using Lumix.Application;
 using Lumix.Application.Auth;
+using Lumix.Application.Services;
 using Lumix.Core.Interfaces.Services;
 using Lumix.Infrastructure;
 using Lumix.Infrastructure.Authenfication;
@@ -13,6 +14,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using Lumix.Persistence;
+using Lumix.Persistence.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 var AllowSpecificOrigins = "allowSpecificOrigins";
@@ -38,7 +41,7 @@ services.AddAutoMapper(typeof(DataBaseMappings));
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
-
+services.AddScoped<IFollowService, FollowService>();
 services.AddScoped<IUserService, UserService>();
 services.AddScoped<IAuthService, AuthService>();
 var app = builder.Build();
