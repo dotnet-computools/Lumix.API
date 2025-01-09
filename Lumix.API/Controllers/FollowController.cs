@@ -16,20 +16,24 @@ public class FollowController : ControllerBase
     }
     
     
-    [HttpPost("{id}/follow")]
-    public async Task<IActionResult> FollowUser(Guid id)
+    [HttpPost("{userid}/follow")]
+    public async Task<IActionResult> FollowUser(Guid userid)
     {
-        var userId = HttpContext.GetUserId();
+        var currentUserId = HttpContext.GetUserId();
 
-        if (!userId.HasValue)
+        if (!currentUserId.HasValue)
         {
             return Unauthorized();
         }
 
         try
         {
-            await _followService.FollowUser(userId.Value, id);
+            await _followService.FollowUser(currentUserId.Value, userid);
             return Ok("User followed successfully");
+        }
+        catch (InvalidOperationException ex) when (ex.Message == "You are already following this person.")
+        {
+            return BadRequest(ex.Message);
         }
         catch (Exception ex)
         {
@@ -37,19 +41,19 @@ public class FollowController : ControllerBase
         }
     }
 
-    [HttpGet("{id}/is-following")]
-    public async Task<IActionResult> IsFollowing(Guid id)
+    [HttpGet("{userid}/is-following")]
+    public async Task<IActionResult> IsFollowing(Guid userid)
     {
-        var userId = HttpContext.GetUserId();
+        var currentUserId = HttpContext.GetUserId();
 
-        if (!userId.HasValue)
+        if (!currentUserId.HasValue)
         {
             return Unauthorized();
         }
 
         try
         {
-            var isFollowing = await _followService.IsFollowing(userId.Value, id);
+            var isFollowing = await _followService.IsFollowing(currentUserId.Value, userid);
             return Ok(new { isFollowing });
         }
         catch (Exception ex)
@@ -58,20 +62,55 @@ public class FollowController : ControllerBase
         }
     }
 
-    [HttpGet("{id}/following")]
-    public async Task<IActionResult> GetFollowing(Guid id)
+    [HttpGet("{userid}/following")]
+    public async Task<IActionResult> GetFollowing(Guid userid)
     {
-        var userId = HttpContext.GetUserId();
+        var currentUserId = HttpContext.GetUserId();
 
-        if (!userId.HasValue)
+        if (!currentUserId.HasValue)
         {
             return Unauthorized();
         }
 
         try
         {
-            var followingIds = await _followService.GetFollowing(id);
+            var followingIds = await _followService.GetFollowing(userid);
             return Ok(followingIds); // Повертаємо лише ID
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    
+    [HttpDelete("{userid}/unfollow")] 
+    public async Task<IActionResult> UnfollowUser(Guid userid)
+    {
+        var currentUserId = HttpContext.GetUserId();
+
+        if (!currentUserId.HasValue)
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            await _followService.UnfollowUser(currentUserId.Value, userid);
+            return Ok("User unfollowed successfully");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    
+    [HttpGet("{userId}/followers")]
+    public async Task<IActionResult> GetFollowers(Guid userId)
+    {
+        try
+        {
+            var followers = await _followService.GetFollowers(userId);
+            return Ok(followers);
         }
         catch (Exception ex)
         {

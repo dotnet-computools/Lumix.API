@@ -8,17 +8,9 @@ namespace Lumix.Application.Services;
 public class FollowService : IFollowService
 {
     private readonly IFollowRepository _followRepository;
-    private readonly IPasswordHasher _passwordHasher;
-    private readonly IJwtProvider _jwtProvider;
-
-    public FollowService(
-        IFollowRepository followRepository,
-        IPasswordHasher passwordHasher,
-        IJwtProvider jwtProvider)
+    public FollowService(IFollowRepository followRepository)
     {
         _followRepository = followRepository;
-        _passwordHasher = passwordHasher;
-        _jwtProvider = jwtProvider;
     }
 
     public async Task FollowUser(Guid userId, Guid targetUserId)
@@ -34,5 +26,14 @@ public class FollowService : IFollowService
     public async Task<List<Guid>> GetFollowing(Guid userId)
     {
         return await _followRepository.GetFollowing(userId);
+    }
+    
+    public async Task UnfollowUser(Guid userId, Guid targetUserId) 
+    {
+        await _followRepository.UnfollowUser(userId, targetUserId);
+    }
+    public async Task<List<Guid>> GetFollowers(Guid userId)
+    {
+        return await _followRepository.GetFollowers(userId);
     }
 }

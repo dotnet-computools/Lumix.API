@@ -19,6 +19,14 @@ public class FollowRepository : IFollowRepository
      
      public async Task FollowUser(Guid userId, Guid targetUserId)
      {
+         var alreadyFollowing = await _context.Follows
+             .AnyAsync(f => f.FollowerId == userId && f.FollowingId == targetUserId);
+
+         if (alreadyFollowing)
+         {
+             throw new InvalidOperationException("You are already following this person.");
+         }
+
          var follow = new Follow
          {
              Id = Guid.NewGuid(),
@@ -26,10 +34,11 @@ public class FollowRepository : IFollowRepository
              FollowingId = targetUserId,
              CreatedAt = DateTime.UtcNow
          };
-         
+
          _context.Follows.Add(follow);
          await _context.SaveChangesAsync();
      }
+
      
      public async Task<bool> IsFollowing(Guid userId, Guid targetUserId)
      {
@@ -45,5 +54,25 @@ public class FollowRepository : IFollowRepository
              .ToListAsync();
 
          return followings;
+     }
+     
+     public async Task UnfollowUser(Guid userId, Guid targetUserId) 
+     {
+         var follow = await _context.Follows
+             .FirstOrDefaultAsync(f => f.FollowerId == userId && f.FollowingId == targetUserId);
+
+         if (follow != null)
+         {
+             _context.Follows.Remove(follow);
+             await _context.SaveChangesAsync();
+         }
+     }
+     
+     public async Task<List<Guid>> GetFollowers(Guid userId)
+     {
+         return await _context.Follows
+             .Where(f => f.FollowingId == userId)
+             .Select(f => f.FollowerId)
+             .ToListAsync();
      }
 }
