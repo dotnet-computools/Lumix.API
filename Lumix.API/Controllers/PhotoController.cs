@@ -1,5 +1,6 @@
 ﻿using Lumix.API.Contracts.Requests.Photo;
 using Lumix.API.Extensions;
+using Lumix.Application.PhotoUpload;
 using Lumix.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +13,14 @@ namespace Lumix.API.Controllers
 		private readonly IPhotoService _photoService;
 		private readonly ITagService _tagService;
 		private readonly IPhotoTagService _photoTagService;
+		private readonly IFileStorageService _storageService;
 
-		public PhotoController(IPhotoService photoService, ITagService service, IPhotoTagService photoTagService)
+		public PhotoController(IPhotoService photoService, ITagService service, IPhotoTagService photoTagService, IFileStorageService storageService)
 		{
 			_photoService = photoService;
 			_tagService = service;
 			_photoTagService = photoTagService;
+			_storageService = storageService;
 		}
 
 		[HttpPost("upload")]
@@ -31,11 +34,11 @@ namespace Lumix.API.Controllers
 					return Unauthorized();
 				}
 
+				var photoS3Url = await _storageService.UploadFileToStorage(uploadRequest.PhotoFile, userId);
+				var newPhotoId = await _photoService.Upload(uploadRequest.Title, photoS3Url, userId);
+
 				await _tagService.CheckAndAddNewTags(uploadRequest.Tags ?? Enumerable.Empty<string>());
 				var tags = await _tagService.GetAllTagsFromStrings(uploadRequest.Tags ?? Enumerable.Empty<string>());
-
-				//s3 upload logic
-				var newPhotoId = await _photoService.Upload(uploadRequest.Title, url: "empty", userId);
 
 				await _photoTagService.AddNewRange(tags, newPhotoId);
 
