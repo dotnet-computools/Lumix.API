@@ -66,7 +66,7 @@ namespace Lumix.Infrastructure.PhotoUpload
 
 		public async Task DeleteFileFromStorage(string s3Url, Guid userId)
 		{
-			var objectKey = s3Url.Substring(79);
+			var objectKey = GetObjectKeyFromUrl(s3Url);
 
 			var deleteObjectRequest = new DeleteObjectRequest()
 			{
@@ -83,13 +83,12 @@ namespace Lumix.Infrastructure.PhotoUpload
 
 		public async Task DeleteThumbnailFromStorage(string s3Url, Guid userId)
 		{
-			var objectKey = s3Url.Substring(79);
-			var thumbnailKey = $"thumbnail_{objectKey}";
+			var objectKey = GetObjectKeyFromUrl(s3Url, true);
 			
 			var deleteObjectRequest = new DeleteObjectRequest()
 			{
 				BucketName = BUCKET_NAME,
-				Key = $"{userId}/{thumbnailKey}"
+				Key = $"{userId}/{objectKey}"
 			};
 
 			var responce = await _client.DeleteObjectAsync(deleteObjectRequest);
@@ -97,6 +96,17 @@ namespace Lumix.Infrastructure.PhotoUpload
 			{
 				throw new InvalidOperationException("Failed to delete thumbnail from storage");
 			}
+		}
+
+		private string GetObjectKeyFromUrl(string s3Url, bool isThumbnail = false)
+		{
+			var objectKey = s3Url.Substring(79);
+
+			if (!isThumbnail)
+			{
+				return objectKey;
+			}
+			return $"thumbnail_{objectKey}";
 		}
 	}
 }
