@@ -35,6 +35,7 @@ namespace Lumix.API.Controllers
 				}
 
 				var photoS3Url = await _storageService.UploadFileToStorage(uploadRequest.PhotoFile, userId);
+				await _storageService.UploadThumbnailToStorage(uploadRequest.PhotoFile, userId);
 				var newPhotoId = await _photoService.Upload(uploadRequest.Title, photoS3Url, userId);
 
 				await _tagService.CheckAndAddNewTags(uploadRequest.Tags ?? Enumerable.Empty<string>());

@@ -16,6 +16,7 @@ public static class InfrastructureExtensions
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IFileStorageService, S3BucketService>();
         services.AddScoped<IPhotoFileValidationService, PhotoFileValidationService>();
+        services.AddScoped<IPhotoResizeService, PhotoResizeService>();
         return services;
     }
 }
