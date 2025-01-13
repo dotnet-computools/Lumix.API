@@ -4,6 +4,6 @@ namespace Lumix.Application.PhotoUpload
 {
 	public interface IPhotoResizeService
 	{
-		Task<IFormFile> ResizePhoto(IFormFile file, int width, int height);
+		Task<IFormFile> ResizePhoto(IFormFile file);
 	}
 }

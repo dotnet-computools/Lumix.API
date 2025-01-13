@@ -7,12 +7,15 @@ namespace Lumix.Infrastructure.PhotoUpload
 {
 	public class PhotoResizeService : IPhotoResizeService
 	{
-		public async Task<IFormFile> ResizePhoto(IFormFile file, int width, int height)
+		private const int THUMBNAIL_WIDTH = 300;
+		private const int THUMBNAIL_HEIGHT = 300;
+
+		public async Task<IFormFile> ResizePhoto(IFormFile file)
 		{
 			using (var inputStream = file.OpenReadStream())
 			using (var image = await Image.LoadAsync(inputStream))
 			{
-				image.Mutate(img => img.Resize(width, height));
+				image.Mutate(img => img.Resize(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT));
 
 				var outputStream = new MemoryStream();
 				await image.SaveAsJpegAsync(outputStream);

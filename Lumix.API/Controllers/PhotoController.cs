@@ -110,6 +110,11 @@ namespace Lumix.API.Controllers
 					return Forbid();
 				}
 
+				var photoToDelete = await _photoService.GetById(id);
+
+				await _storageService.DeleteFileFromStorage(photoToDelete.Url, userId);
+				await _storageService.DeleteThumbnailFromStorage(photoToDelete.Url, userId);
+
 				await _photoService.Delete(id);
 				return Ok();
 			}

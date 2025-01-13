@@ -1,6 +1,7 @@
 ﻿using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Azure;
 using Lumix.Application.PhotoUpload;
 using Lumix.Persistence.Entities;
 using Microsoft.AspNetCore.Http;
@@ -15,8 +16,6 @@ namespace Lumix.Infrastructure.PhotoUpload
 		private readonly IAmazonS3 _client;
 		
 		private const string BUCKET_NAME = "lumix";
-		private const int THUMBNAIL_WIDTH = 300;
-		private const int THUMBNAIL_HEIGHT = 300;
 
 		public S3BucketService(IPhotoFileValidationService photoFileValidationService, IPhotoResizeService photoResizeService)
 		{
@@ -49,7 +48,7 @@ namespace Lumix.Infrastructure.PhotoUpload
 		public async Task UploadThumbnailToStorage(IFormFile photoFile, Guid userId)
 		{
 			_photoFileValidationService.ValidateFile(photoFile);
-			var resizedPhoto = await _photoResizeService.ResizePhoto(photoFile, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
+			var resizedPhoto = await _photoResizeService.ResizePhoto(photoFile);
 
 			var request = new PutObjectRequest()
 			{
@@ -61,7 +60,42 @@ namespace Lumix.Infrastructure.PhotoUpload
 			var responce = await _client.PutObjectAsync(request);
 			if (responce.HttpStatusCode != HttpStatusCode.OK)
 			{
-				throw new InvalidOperationException("Failed to upload photo to storage");
+				throw new InvalidOperationException("Failed to upload thumbnail to storage");
+			}
+		}
+
+		public async Task DeleteFileFromStorage(string s3Url, Guid userId)
+		{
+			var objectKey = s3Url.Substring(79);
+
+			var deleteObjectRequest = new DeleteObjectRequest()
+			{
+				BucketName = BUCKET_NAME,
+				Key = $"{userId}/{objectKey}"
+			};
+
+			var responce = await _client.DeleteObjectAsync(deleteObjectRequest);
+			if (responce.HttpStatusCode != HttpStatusCode.NoContent)
+			{
+				throw new InvalidOperationException("Failed to delete photo from storage");
+			}
+		}
+
+		public async Task DeleteThumbnailFromStorage(string s3Url, Guid userId)
+		{
+			var objectKey = s3Url.Substring(79);
+			var thumbnailKey = $"thumbnail_{objectKey}";
+			
+			var deleteObjectRequest = new DeleteObjectRequest()
+			{
+				BucketName = BUCKET_NAME,
+				Key = $"{userId}/{thumbnailKey}"
+			};
+
+			var responce = await _client.DeleteObjectAsync(deleteObjectRequest);
+			if (responce.HttpStatusCode != HttpStatusCode.NoContent)
+			{
+				throw new InvalidOperationException("Failed to delete thumbnail from storage");
 			}
 		}
 	}
