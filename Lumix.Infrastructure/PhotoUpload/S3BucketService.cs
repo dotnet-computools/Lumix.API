@@ -48,17 +48,22 @@ namespace Lumix.Infrastructure.PhotoUpload
 		public async Task UploadThumbnailToStorage(IFormFile photoFile, Guid userId)
 		{
 			_photoFileValidationService.ValidateFile(photoFile);
-			var resizedPhoto = await _photoResizeService.ResizePhoto(photoFile);
+
+            var size = await _photoResizeService.GetSize(photoFile);
+
+            var modifiedPhoto = _photoResizeService.IsNeedToCrop(size.Width, size.Height)
+                ? await _photoResizeService.CropPhoto(photoFile)
+                : await _photoResizeService.ResizePhoto(photoFile);
 
 			var request = new PutObjectRequest()
 			{
 				BucketName = BUCKET_NAME,
-				Key = $"{userId}/thumbnail_{resizedPhoto.FileName}",
-				InputStream = resizedPhoto.OpenReadStream()
+				Key = $"{userId}/thumbnail_{modifiedPhoto.FileName}",
+				InputStream = modifiedPhoto.OpenReadStream()
 			};
 
-			var responce = await _client.PutObjectAsync(request);
-			if (responce.HttpStatusCode != HttpStatusCode.OK)
+			var response = await _client.PutObjectAsync(request);
+			if (response.HttpStatusCode != HttpStatusCode.OK)
 			{
 				throw new InvalidOperationException("Failed to upload thumbnail to storage");
 			}
