@@ -1,5 +1,6 @@
 
 using Lumix.API.Contracts.Request.AuthRequest;
+using Lumix.API.Contracts.Response;
 using Lumix.API.Extensions;
 using Lumix.Application.Auth;
 using Lumix.Core.Interfaces.Services;
@@ -27,7 +28,7 @@ namespace Lumix.API.Controllers
             try
             {
                 await _authService.Register(request.UserName, request.Email, request.Password);
-                return Ok("User registered successfully");
+                return Ok(new RegisterResponse { Message = "User registered successfully" });
             }
             catch (Exception ex)
             {
