@@ -17,7 +17,7 @@ namespace Lumix.Infrastructure.PhotoUpload
 
 			if (photoFile.Length > MAX_FILE_SIZE)
 			{
-				throw new ArgumentException("Photo file size cannot exceed 5 Mb");
+				throw new ArgumentException("Photo file size cannot exceed 15 Mb");
 			}
 
 			var fileFormat = Path.GetExtension(photoFile.FileName).ToLower();
