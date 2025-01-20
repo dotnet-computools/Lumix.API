@@ -13,10 +13,10 @@ namespace Lumix.Application.Services
 			_photosRepository = photosRepository;
 		}
 
-		public async Task<Guid> Upload(string title, string url, Guid userId)
+		public async Task<Guid> Upload(string title, string url, Guid photoId, Guid userId)
 		{
 			var photo = PhotoDto.Create(
-				Guid.NewGuid(),
+				photoId,
 				userId,
 				title,
 				url,
