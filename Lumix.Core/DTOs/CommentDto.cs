@@ -12,6 +12,7 @@
 			UserId = userId;
 			PhotoId = photoId;
 			Text = text;
+			CreatedAt = DateTime.Now;
 		}
 
 		public Guid Id { get; }

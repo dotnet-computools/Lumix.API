@@ -8,6 +8,7 @@ namespace Lumix.Core.Interfaces.Services
 		Task<PhotoDto> GetById(Guid id);
 		Task<IEnumerable<PhotoDto>> GetByIds(IEnumerable<Guid> photoId);
 		Task<IEnumerable<PhotoDto>> GetAll();
+		IEnumerable<PhotoDto> GetFromCollectionByPage(IEnumerable<PhotoDto> photos, int pageNumber);
 		Task<bool> IsPhotoBelongToUser(Guid userId, Guid photoId);
 		Task<IEnumerable<PhotoDto>> GetAllUserPhotos(Guid userId);
 		Task UpdateInfo(PhotoDto photoToUpdate, string newTitle);

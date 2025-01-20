@@ -52,8 +52,8 @@ namespace Lumix.API.Controllers
 			}
 		}
 
-		[HttpGet("feed")]
-		public async Task<IActionResult> GetFeed()
+		[HttpGet("feed/{pageNumber:int}")]
+		public async Task<IActionResult> GetFeedByTags([FromQuery] IEnumerable<string> tags, int pageNumber = 1)
 		{
 			try
 			{
@@ -63,8 +63,12 @@ namespace Lumix.API.Controllers
 					return Unauthorized();
 				}
 
-				var photos = await _photoService.GetAll();
-				return Ok(photos);
+				var tagsList = await _tagService.GetAllTagsFromStrings(tags);
+				var photosId = await _photoTagService.GetPhotosIdByTagsId(tagsList.Select(t => t.Id));
+				var photos = await _photoService.GetByIds(photosId);
+				var pagedPhotos = _photoService.GetFromCollectionByPage(photos, pageNumber);
+
+				return Ok(pagedPhotos);
 			}
 			catch (Exception ex)
 			{
@@ -152,29 +156,6 @@ namespace Lumix.API.Controllers
 				var newPhotoTags = _photoTagService.AddNewRange(oldTags, id);
 
 				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(ex.Message);
-			}
-		}
-
-		[HttpGet("search")]
-		public async Task<IActionResult> SearchByTags([FromQuery] IEnumerable<string> tagsNames)
-		{
-			try
-			{
-				var userId = HttpContext.GetUserId() ?? Guid.Empty;
-				if (userId == Guid.Empty)
-				{
-					return Unauthorized();
-				}
-
-				var tags = await _tagService.GetAllTagsFromStrings(tagsNames);
-				var photosId = await _photoTagService.GetPhotosIdByTagsId(tags.Select(t => t.Id));
-				var photos = await _photoService.GetByIds(photosId);
-
-				return Ok(photos);
 			}
 			catch (Exception ex)
 			{
