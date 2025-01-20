@@ -24,14 +24,14 @@ namespace Lumix.Infrastructure.PhotoUpload
 			_client = new AmazonS3Client(RegionEndpoint.EUNorth1);
 		}
 
-		public async Task<string> UploadFileToStorage(IFormFile photoFile, Guid userId)
+		public async Task<string> UploadFileToStorage(IFormFile photoFile, Guid photoId, Guid userId)
 		{
 			_photoFileValidationService.ValidateFile(photoFile);
 
 			var request = new PutObjectRequest()
 			{
 				BucketName = BUCKET_NAME,
-				Key = $"{userId}/{photoFile.FileName}",
+				Key = $"{userId}/{photoId}",
 				InputStream = photoFile.OpenReadStream()
 			};
 
@@ -45,7 +45,7 @@ namespace Lumix.Infrastructure.PhotoUpload
 			return objectUrl;
 		}
 
-		public async Task UploadThumbnailToStorage(IFormFile photoFile, Guid userId)
+		public async Task UploadThumbnailToStorage(IFormFile photoFile, Guid photoId, Guid userId)
 		{
 			_photoFileValidationService.ValidateFile(photoFile);
 
@@ -58,7 +58,7 @@ namespace Lumix.Infrastructure.PhotoUpload
 			var request = new PutObjectRequest()
 			{
 				BucketName = BUCKET_NAME,
-				Key = $"{userId}/thumbnail_{modifiedPhoto.FileName}",
+				Key = $"{userId}/thumbnail_{photoId}",
 				InputStream = modifiedPhoto.OpenReadStream()
 			};
 

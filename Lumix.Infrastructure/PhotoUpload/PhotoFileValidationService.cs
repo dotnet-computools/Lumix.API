@@ -6,7 +6,7 @@ namespace Lumix.Infrastructure.PhotoUpload
 	public class PhotoFileValidationService : IPhotoFileValidationService
 	{
 		private readonly IReadOnlyCollection<string> allowedFileFormats = [".jpg", ".png"];
-		private const int MAX_FILE_SIZE = 5 * 1024 * 1024;
+		private const int MAX_FILE_SIZE = 15 * 1024 * 1024;
 
 		public void ValidateFile(IFormFile photoFile)
 		{

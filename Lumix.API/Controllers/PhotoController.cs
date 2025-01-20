@@ -34,9 +34,10 @@ namespace Lumix.API.Controllers
 					return Unauthorized();
 				}
 
-				var photoS3Url = await _storageService.UploadFileToStorage(uploadRequest.PhotoFile, userId);
-				await _storageService.UploadThumbnailToStorage(uploadRequest.PhotoFile, userId);
-				var newPhotoId = await _photoService.Upload(uploadRequest.Title, photoS3Url, userId);
+				var photoId = Guid.NewGuid();
+				var photoS3Url = await _storageService.UploadFileToStorage(uploadRequest.PhotoFile, photoId, userId);
+				await _storageService.UploadThumbnailToStorage(uploadRequest.PhotoFile, photoId, userId);
+				var newPhotoId = await _photoService.Upload(uploadRequest.Title, photoS3Url, photoId, userId);
 
 				await _tagService.CheckAndAddNewTags(uploadRequest.Tags ?? Enumerable.Empty<string>());
 				var tags = await _tagService.GetAllTagsFromStrings(uploadRequest.Tags ?? Enumerable.Empty<string>());
