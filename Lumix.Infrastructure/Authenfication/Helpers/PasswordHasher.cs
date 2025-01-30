@@ -1,7 +1,6 @@
-﻿
-using Lumix.Application.Auth;
+﻿using Lumix.Application.Auth;
 
-namespace Lumix.Infrastructure.Authenfication;
+namespace Lumix.Infrastructure.Authenfication.Helpers;
 public class PasswordHasher : IPasswordHasher
 {
     public string Generate(string password)

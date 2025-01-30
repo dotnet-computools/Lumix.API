@@ -1,6 +1,7 @@
 using Lumix.Application.Auth;
 using Lumix.Application.PhotoUpload;
 using Lumix.Infrastructure.Authenfication;
+using Lumix.Infrastructure.Authenfication.Helpers;
 using Lumix.Infrastructure.Authenfication.Jwt;
 using Lumix.Infrastructure.PhotoUpload;
 using Microsoft.AspNetCore.Authorization;

@@ -30,7 +30,6 @@ public class AuthRepository : IAuthRepository
     {
         try
         {
-
             var userEntity = new User
             {
                 Id = Guid.NewGuid(),

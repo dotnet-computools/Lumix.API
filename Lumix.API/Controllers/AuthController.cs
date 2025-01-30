@@ -14,7 +14,6 @@ namespace Lumix.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AuthService _authService;
-     
 
         public AuthController(AuthService authService)
         {
@@ -24,11 +23,19 @@ namespace Lumix.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            
             try
             {
                 await _authService.Register(request.UserName, request.Email, request.Password);
+
                 return Ok(new RegisterResponse { Message = "User registered successfully" });
+
+                var registerResponse = new RegisterResponse
+                {
+                    UserName = request.UserName,
+                    Email = request.Email,
+                    Password = request.Password
+                };
+                return Ok(registerResponse);
             }
             catch (Exception ex)
             {
@@ -42,19 +49,22 @@ namespace Lumix.API.Controllers
             try
             {
                 var (accessToken, refreshToken) = await _authService.Login(request.Email, request.Password);
-                Response.Cookies.Append("accessToken", accessToken, new CookieOptions
+                var cookieOptions = new CookieOptions
                 {
                     HttpOnly = true,
                     Secure = true,
-                    SameSite = SameSiteMode.Strict
-                });
-                Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+                    SameSite = SameSiteMode.None
+                };
+        
+               Response.Cookies.Append("accessToken", accessToken, cookieOptions);
+               Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+                var loginResponse = new LoginResponse
                 {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict
-                });
-                return Ok(new { accessToken, refreshToken });
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+
+                return Ok(loginResponse);
             }
             catch (Exception ex)
             {

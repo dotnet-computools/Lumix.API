@@ -1,0 +1,44 @@
+﻿  version: '3.8'
+  
+  services:
+    sqlserver:
+      container_name: lumix-sqlserver
+      image: mcr.microsoft.com/mssql/server:2022-latest
+      ports:
+        - "1433:1433"
+      environment:
+        - ACCEPT_EULA=Y
+        - MSSQL_SA_PASSWORD=Lumix1234!Complex123
+      networks:
+        - lumix-network
+      volumes:
+        - sql_data:/var/opt/mssql 
+      healthcheck:
+        test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Lumix1234!Complex123' -Q 'SELECT 1' -C"]
+        interval: 10s
+        timeout: 5s
+        retries: 3
+    
+    backend:
+      container_name: lumix-backend
+      build:
+        context: .
+        dockerfile: Lumix.API/Dockerfile
+      ports:
+        - "5000:8080"
+      environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=http://+:8080
+        - ConnectionStrings__DefaultConnection=Server=lumix-sqlserver,1433;Database=master;User Id=sa;Password=Lumix1234!Complex123;TrustServerCertificate=True;Encrypt=False;MultipleActiveResultSets=True;Connect Timeout=120;ConnectRetryCount=10;ConnectRetryInterval=10
+      depends_on:
+        - sqlserver
+      networks:
+        - lumix-network
+  
+  networks:
+    lumix-network:
+      name: lumix-network
+      driver: bridge
+  
+  volumes:
+    sql_data:  
