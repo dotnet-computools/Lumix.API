@@ -1,0 +1,21 @@
+# This is a generated file. Not intended for manual editing.
+version: "3.8"
+services:
+  backend:
+    build:
+      context: "C:\\Users\\Andrii\\source\\repos\\dotnet-computools\\Lumix.API"
+      dockerfile: "Lumix.API/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/Lumix.API.dll"
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "lumix.api:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\Andrii\\.nuget\\packages:/home/app/.nuget/packages"
+    - "C:\\Users\\Andrii\\source\\repos\\dotnet-computools\\Lumix.API\\Lumix.API:/app:rw"
+    - "C:\\Users\\Andrii\\source\\repos\\dotnet-computools\\Lumix.API:/src:rw"
+    working_dir: "/app"

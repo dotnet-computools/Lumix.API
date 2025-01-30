@@ -12,12 +12,14 @@ namespace Lumix.API.Controllers
 		private readonly IPhotoService _photoService;
 		private readonly ITagService _tagService;
 		private readonly IPhotoTagService _photoTagService;
+		private readonly ILogger<PhotoController> _logger;
 
-		public PhotoController(IPhotoService photoService, ITagService service, IPhotoTagService photoTagService)
+		public PhotoController (IPhotoService photoService, ITagService tagService, IPhotoTagService photoTagService, ILogger<PhotoController> logger)
 		{
 			_photoService = photoService;
-			_tagService = service;
+			_tagService = tagService;
 			_photoTagService = photoTagService;
+			_logger = logger;
 		}
 
 		[HttpPost("upload")]

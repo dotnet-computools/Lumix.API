@@ -24,6 +24,20 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 var configuration = builder.Configuration;
 var services = builder.Services;
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy
+                .WithOrigins("https://localhost:7252") 
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .WithExposedHeaders("*");
+        });
+});
+
 // Add services
 services.AddHttpContextAccessor();
 services.AddApiAuthentication(configuration);
@@ -36,7 +50,6 @@ services.AddInfrastructure();
 services.AddPersistence(configuration);
 builder.Services.AddProblemDetails();
 services.AddExceptionHandler<GlobalExceptionHandler>();
-
 services.AddAutoMapper(typeof(DataBaseMappings));
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
@@ -55,6 +68,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 // Middleware
+app.UseCors("AllowAll");
 app.UseUserId();
 app.UseAuthorization();
 app.MapControllers();

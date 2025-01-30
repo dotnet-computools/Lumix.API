@@ -1,3 +1,7 @@
 namespace Lumix.API.Contracts.Response;
 
-public record LoginResponse();
+public class LoginResponse
+{
+    public string AccessToken { get; set; } = string.Empty;
+    public string RefreshToken { get; set; } = string.Empty;
+}

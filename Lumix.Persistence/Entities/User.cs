@@ -1,6 +1,4 @@
-﻿
-
-namespace Lumix.Persistence.Entities;
+﻿namespace Lumix.Persistence.Entities;
 
 public class User
 {

@@ -33,7 +33,7 @@ public class UsersRepository : IUsersRepository
         var user = await _context.Users.FindAsync(userId) 
                    ?? throw new InvalidOperationException("User not found");
 
-        // Check unqiue username
+        // Check unique username
         if (await _context.Users.AnyAsync(u => u.Username == username && u.Id != userId))
         {
             throw new InvalidOperationException("Username already taken");
