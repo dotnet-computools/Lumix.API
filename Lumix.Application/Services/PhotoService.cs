@@ -1,6 +1,7 @@
 ﻿using Lumix.Core.DTOs;
 using Lumix.Core.Interfaces.Repositories;
 using Lumix.Core.Interfaces.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Lumix.Application.Services
 {
@@ -8,15 +9,17 @@ namespace Lumix.Application.Services
 	{
 		private readonly IPhotosRepository _photosRepository;
 
+		private const int PHOTOS_COUNT_ON_PAGE = 10;
+
 		public PhotoService(IPhotosRepository photosRepository)
 		{
 			_photosRepository = photosRepository;
 		}
 
-		public async Task<Guid> Upload(string title, string url, Guid userId)
+		public async Task<Guid> Upload(string title, string url, Guid photoId, Guid userId)
 		{
 			var photo = PhotoDto.Create(
-				Guid.NewGuid(),
+				photoId,
 				userId,
 				title,
 				url,
@@ -41,12 +44,21 @@ namespace Lumix.Application.Services
 				photos.Add(photo);
 			}
 
-			return photos;
+			return photos.OrderByDescending(p => p.CreatedAt);
 		}
 
 		public async Task<IEnumerable<PhotoDto>> GetAll()
 		{
 			return await _photosRepository.GetAll();
+		}
+
+		public IEnumerable<PhotoDto> GetFromCollectionByPage(IEnumerable<PhotoDto> photos, int pageNumber)
+		{
+			var pagedPhotos = photos
+				.Skip((pageNumber - 1) * PHOTOS_COUNT_ON_PAGE)
+				.Take(PHOTOS_COUNT_ON_PAGE);
+
+			return pagedPhotos;
 		}
 
 		public async Task<IEnumerable<PhotoDto>> GetAllUserPhotos(Guid userId)

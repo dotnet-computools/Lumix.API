@@ -26,6 +26,9 @@ namespace Lumix.API.Controllers
             try
             {
                 await _authService.Register(request.UserName, request.Email, request.Password);
+
+                return Ok(new RegisterResponse { Message = "User registered successfully" });
+
                 var registerResponse = new RegisterResponse
                 {
                     UserName = request.UserName,

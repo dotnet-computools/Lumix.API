@@ -1,5 +1,6 @@
 ﻿using Lumix.API.Contracts.Requests.Photo;
 using Lumix.API.Extensions;
+using Lumix.Application.PhotoUpload;
 using Lumix.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,14 +13,14 @@ namespace Lumix.API.Controllers
 		private readonly IPhotoService _photoService;
 		private readonly ITagService _tagService;
 		private readonly IPhotoTagService _photoTagService;
-		private readonly ILogger<PhotoController> _logger;
+		private readonly IFileStorageService _storageService;
 
-		public PhotoController (IPhotoService photoService, ITagService tagService, IPhotoTagService photoTagService, ILogger<PhotoController> logger)
+		public PhotoController(IPhotoService photoService, ITagService service, IPhotoTagService photoTagService, IFileStorageService storageService)
 		{
 			_photoService = photoService;
-			_tagService = tagService;
+			_tagService = service;
 			_photoTagService = photoTagService;
-			_logger = logger;
+			_storageService = storageService;
 		}
 
 		[HttpPost("upload")]
@@ -33,11 +34,13 @@ namespace Lumix.API.Controllers
 					return Unauthorized();
 				}
 
+				var photoId = Guid.NewGuid();
+				var photoS3Url = await _storageService.UploadFileToStorage(uploadRequest.PhotoFile, photoId, userId);
+				await _storageService.UploadThumbnailToStorage(uploadRequest.PhotoFile, photoId, userId);
+				var newPhotoId = await _photoService.Upload(uploadRequest.Title, photoS3Url, photoId, userId);
+
 				await _tagService.CheckAndAddNewTags(uploadRequest.Tags ?? Enumerable.Empty<string>());
 				var tags = await _tagService.GetAllTagsFromStrings(uploadRequest.Tags ?? Enumerable.Empty<string>());
-
-				//s3 upload logic
-				var newPhotoId = await _photoService.Upload(uploadRequest.Title, url: "empty", userId);
 
 				await _photoTagService.AddNewRange(tags, newPhotoId);
 
@@ -49,8 +52,8 @@ namespace Lumix.API.Controllers
 			}
 		}
 
-		[HttpGet("feed")]
-		public async Task<IActionResult> GetFeed()
+		[HttpGet("feed/{pageNumber:int}")]
+		public async Task<IActionResult> GetFeedByTags([FromQuery] IEnumerable<string> tags, int pageNumber = 1)
 		{
 			try
 			{
@@ -60,8 +63,12 @@ namespace Lumix.API.Controllers
 					return Unauthorized();
 				}
 
-				var photos = await _photoService.GetAll();
-				return Ok(photos);
+				var tagsList = await _tagService.GetAllTagsFromStrings(tags);
+				var photosId = await _photoTagService.GetPhotosIdByTagsId(tagsList.Select(t => t.Id));
+				var photos = await _photoService.GetByIds(photosId);
+				var pagedPhotos = _photoService.GetFromCollectionByPage(photos, pageNumber);
+
+				return Ok(pagedPhotos);
 			}
 			catch (Exception ex)
 			{
@@ -108,6 +115,11 @@ namespace Lumix.API.Controllers
 					return Forbid();
 				}
 
+				var photoToDelete = await _photoService.GetById(id);
+
+				await _storageService.DeleteFileFromStorage(photoToDelete.Url, userId);
+				await _storageService.DeleteThumbnailFromStorage(photoToDelete.Url, userId);
+
 				await _photoService.Delete(id);
 				return Ok();
 			}
@@ -144,29 +156,6 @@ namespace Lumix.API.Controllers
 				var newPhotoTags = _photoTagService.AddNewRange(oldTags, id);
 
 				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(ex.Message);
-			}
-		}
-
-		[HttpGet("search")]
-		public async Task<IActionResult> SearchByTags([FromQuery] IEnumerable<string> tagsNames)
-		{
-			try
-			{
-				var userId = HttpContext.GetUserId() ?? Guid.Empty;
-				if (userId == Guid.Empty)
-				{
-					return Unauthorized();
-				}
-
-				var tags = await _tagService.GetAllTagsFromStrings(tagsNames);
-				var photosId = await _photoTagService.GetPhotosIdByTagsId(tags.Select(t => t.Id));
-				var photos = await _photoService.GetByIds(photosId);
-
-				return Ok(photos);
 			}
 			catch (Exception ex)
 			{

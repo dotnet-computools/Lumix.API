@@ -1,7 +1,9 @@
 using Lumix.Application.Auth;
+using Lumix.Application.PhotoUpload;
 using Lumix.Infrastructure.Authenfication;
 using Lumix.Infrastructure.Authenfication.Helpers;
 using Lumix.Infrastructure.Authenfication.Jwt;
+using Lumix.Infrastructure.PhotoUpload;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +15,9 @@ public static class InfrastructureExtensions
     {
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IFileStorageService, S3BucketService>();
+        services.AddScoped<IPhotoFileValidationService, PhotoFileValidationService>();
+        services.AddScoped<IPhotoResizeService, PhotoResizeService>();
         return services;
     }
 }
