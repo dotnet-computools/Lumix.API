@@ -50,4 +50,15 @@ public class UserController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+    [Authorize]
+    [HttpGet("profile")]
+    public async Task<ActionResult<UserProfileDto>> GetProfile()
+    {
+        var userId = HttpContext.GetUserId();
+        if (!userId.HasValue)
+            return Unauthorized();
+        var profile = await _userService.GetProfileAsync(userId.Value);
+        
+        return Ok(profile);
+    }
 }
