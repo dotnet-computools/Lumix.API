@@ -44,4 +44,11 @@ public class UsersRepository : IUsersRepository
 
         return _mapper.Map<UserDto>(user);
     }
+
+    public async Task<UserDto> GetByIdAsync(Guid userId)
+    {
+        var user = await _context.Users.FindAsync(userId)
+            ?? throw new InvalidOperationException("User not found");
+        return _mapper.Map<UserDto>(user);
+    }
 }
