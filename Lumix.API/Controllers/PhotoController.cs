@@ -1,4 +1,5 @@
 ﻿using Lumix.API.Contracts.Requests.Photo;
+using Lumix.API.Contracts.Response.Photo;
 using Lumix.API.Extensions;
 using Lumix.Application.PhotoUpload;
 using Lumix.Core.Interfaces.Services;
@@ -44,7 +45,13 @@ namespace Lumix.API.Controllers
 
 				await _photoTagService.AddNewRange(tags, newPhotoId);
 
-				return Ok();
+				var response = new PhotoUploadResponse
+				{
+					PhotoId = newPhotoId,
+					PhotoUrl = photoS3Url
+				};
+
+				return Ok(response);
 			}
 			catch (Exception ex)
 			{
