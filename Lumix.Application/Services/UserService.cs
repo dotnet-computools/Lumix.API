@@ -28,26 +28,12 @@ public class UserService : IUserService
     }
 
     public async Task<UserProfileDto> GetProfileAsync(Guid userId)
-    {
-        var user = await _usersRepository.GetByIdAsync(userId);
+        => await _usersRepository.GetProfileAsync(userId);
 
-        return new UserProfileDto
-        {
-            Id = user.Id,
-            Username = user.Username,
-            ProfilePictureUrl = user.ProfilePictureUrl,
-            Bio = user.Bio,
-            FollowersCount = user.Followers.Count(),
-            FollowingCount = user.Following.Count(),
-            PhotosCount = user.Photos.Count(),
-            Photos = user.Photos
-                .OrderByDescending(p => p.CreatedAt)
-                .Select(p => new PhotoPrewiewDto
-                {
-                    Id = p.Id,
-                    Url = p.Url
-                })
-                .ToList()
-        };
+    public async Task UpdateProfilePictureAsync(Guid userId, string profilePictureUrl)
+    {
+        if(string.IsNullOrWhiteSpace(profilePictureUrl))
+            throw new ArgumentException("Profile picture URL cannot be empty");
+        await _usersRepository.UpdateProfilePictureAsync(userId, profilePictureUrl);
     }
 }
