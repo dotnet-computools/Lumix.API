@@ -14,15 +14,17 @@ namespace Lumix.API.Controllers
 		private readonly IPhotoService _photoService;
 		private readonly ITagService _tagService;
 		private readonly IPhotoTagService _photoTagService;
-		private readonly IFileStorageService _storageService;
+		private readonly IUserService _userService;
+        private readonly IFileStorageService _storageService;
 
-		public PhotoController(IPhotoService photoService, ITagService service, IPhotoTagService photoTagService, IFileStorageService storageService)
+		public PhotoController(IPhotoService photoService, ITagService service, IPhotoTagService photoTagService, IFileStorageService storageService, IUserService userService)
 		{
 			_photoService = photoService;
 			_tagService = service;
 			_photoTagService = photoTagService;
 			_storageService = storageService;
-		}
+			_userService = userService;
+        }
 
 		[HttpPost("upload")]
 		public async Task<IActionResult> Upload([FromForm] UploadRequest uploadRequest)
@@ -40,10 +42,17 @@ namespace Lumix.API.Controllers
 				await _storageService.UploadThumbnailToStorage(uploadRequest.PhotoFile, photoId, userId);
 				var newPhotoId = await _photoService.Upload(uploadRequest.Title, photoS3Url, photoId, userId);
 
-				await _tagService.CheckAndAddNewTags(uploadRequest.Tags ?? Enumerable.Empty<string>());
-				var tags = await _tagService.GetAllTagsFromStrings(uploadRequest.Tags ?? Enumerable.Empty<string>());
+				if (uploadRequest.IsAvatar)
+				{
+					await _userService.UpdateProfilePictureAsync(userId, photoS3Url);
+				}
+				else
+				{
+                    await _tagService.CheckAndAddNewTags(uploadRequest.Tags ?? Enumerable.Empty<string>());
+                    var tags = await _tagService.GetAllTagsFromStrings(uploadRequest.Tags ?? Enumerable.Empty<string>());
 
-				await _photoTagService.AddNewRange(tags, newPhotoId);
+                    await _photoTagService.AddNewRange(tags, newPhotoId);
+                }
 
 				var response = new PhotoUploadResponse
 				{
