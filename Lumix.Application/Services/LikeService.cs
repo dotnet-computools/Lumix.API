@@ -24,8 +24,6 @@ namespace Lumix.Application.Services
 				photoId);
 
 			await _likesRepository.Add(like);
-
-			photo.IncrementLikeCount();
 			await _photoRepository.Update(photo);
 		}
 
@@ -42,7 +40,6 @@ namespace Lumix.Application.Services
 
 			await _likesRepository.DeleteByUserPhotoId(userId, photoId);
 
-			photo.DecrementLikeCount();
 			await _photoRepository.Update(photo);
 		}
 	}

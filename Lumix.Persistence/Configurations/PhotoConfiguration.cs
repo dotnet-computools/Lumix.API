@@ -18,8 +18,11 @@ namespace Lumix.Persistence.Configurations
 				.IsRequired()
 				.HasMaxLength(500);
 
-			
-			builder.HasOne(p => p.User)
+			builder.Property(p => p.IsAvatar)
+				.HasDefaultValue(false);
+
+
+            builder.HasOne(p => p.User)
 				.WithMany(u => u.Photos)
 				.HasForeignKey(p => p.UserId)
 				.OnDelete(DeleteBehavior.Cascade);

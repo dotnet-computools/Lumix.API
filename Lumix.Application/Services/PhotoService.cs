@@ -16,14 +16,18 @@ namespace Lumix.Application.Services
 			_photosRepository = photosRepository;
 		}
 
-		public async Task<Guid> Upload(string title, string url, Guid photoId, Guid userId)
+		public async Task<Guid> Upload(string title, string url, Guid photoId, Guid userId, bool isAvatar)
 		{
-			var photo = PhotoDto.Create(
-				photoId,
-				userId,
-				title,
-				url,
-				DateTime.UtcNow);
+			var photo = new PhotoDto
+			{
+				Id = photoId,
+				UserId = userId,
+				Title = title,
+				Url = url,
+				CreatedAt = DateTime.UtcNow,
+				IsAvatar = isAvatar
+            };
+				
 
 			await _photosRepository.Add(photo);
 			return photo.Id;
@@ -75,7 +79,6 @@ namespace Lumix.Application.Services
 
 		public async Task UpdateInfo(PhotoDto photoToUpdate, string newTitle)
 		{
-			photoToUpdate.Update(newTitle);
 
 			await _photosRepository.Update(photoToUpdate);
 		}

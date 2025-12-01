@@ -81,6 +81,7 @@ public class UsersRepository : IUsersRepository
             PhotosCount = user.Photos.Count,
             Photos = user.Photos
             .OrderByDescending(p => p.CreatedAt)
+            .Where(p => !p.IsAvatar)
             .Select(p => new PhotoPrewiewDto
             {
                 Id = p.Id,

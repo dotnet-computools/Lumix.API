@@ -8,6 +8,7 @@ public class Photo
     public string Url { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public int LikeCount { get; set; }
+    public bool IsAvatar { get; set; }
 
     public User? User { get; set; }
     public List<Like> Likes { get; set; } = new();

@@ -40,7 +40,7 @@ namespace Lumix.API.Controllers
 				var photoId = Guid.NewGuid();
 				var photoS3Url = await _storageService.UploadFileToStorage(uploadRequest.PhotoFile, photoId, userId);
 				await _storageService.UploadThumbnailToStorage(uploadRequest.PhotoFile, photoId, userId);
-				var newPhotoId = await _photoService.Upload(uploadRequest.Title, photoS3Url, photoId, userId);
+				var newPhotoId = await _photoService.Upload(uploadRequest.Title, photoS3Url, photoId, userId, uploadRequest.IsAvatar);
 
 				if (uploadRequest.IsAvatar)
 				{

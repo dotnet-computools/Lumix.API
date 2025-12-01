@@ -27,7 +27,8 @@ namespace Lumix.Persistence.Repositories
 				Url = photo.Url,
 				CreatedAt = photo.CreatedAt,
 				LikeCount = photo.LikeCount,
-			};
+				IsAvatar = photo.IsAvatar
+            };
 
 			await _context.Photos.AddAsync(photoEntity);
 			await _context.SaveChangesAsync();
@@ -58,6 +59,7 @@ namespace Lumix.Persistence.Repositories
 			var photoList = await _context.Photos
 				.AsNoTracking()
 				.Where(p => p.UserId == userId)
+				.Where(p => !p.IsAvatar)
 				.OrderByDescending(p => p.CreatedAt)
 				.ToListAsync() ?? throw new InvalidOperationException("Photo not found.");
 
@@ -91,8 +93,9 @@ namespace Lumix.Persistence.Repositories
 				Title = photo.Title,
 				Url = photo.Url,
 				CreatedAt = photo.CreatedAt,
-				LikeCount = photo.LikeCount
-			};
+				LikeCount = photo.LikeCount,
+				IsAvatar = photo.IsAvatar
+            };
 
 			_context.Photos.Update(photoEntity);
 			await _context.SaveChangesAsync();
