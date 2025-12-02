@@ -3,6 +3,7 @@ using Lumix.Core.DTOs;
 using Lumix.Core.Interfaces.Repositories;
 using Lumix.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper.QueryableExtensions;
 
 namespace Lumix.Persistence.Repositories
 {
@@ -68,12 +69,20 @@ namespace Lumix.Persistence.Repositories
 
 		public async Task<PhotoDto> GetById(Guid id)
 		{
-			var photo = await _context.Photos
+            var photo = await _context.Photos
 				.AsNoTracking()
-				.FirstOrDefaultAsync(p => p.Id == id) ?? throw new InvalidOperationException("Photo not found.");
+				.Include(p => p.User)
+				.Include(p => p.PhotoTags)
+					.ThenInclude(pt => pt.Tag)
+				.Include(p => p.Comments)
+				.Include(p => p.Likes)
+				.FirstOrDefaultAsync(p => p.Id == id);
 
-			return _mapper.Map<PhotoDto>(photo);
-		}
+            if (photo is null)
+                throw new InvalidOperationException("Photo not found.");
+
+            return _mapper.Map<PhotoDto>(photo);
+        }
 
 		public async Task<PhotoDto> GetByUserAndPhotoId(Guid userId, Guid photoId)
 		{

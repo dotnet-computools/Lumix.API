@@ -18,12 +18,15 @@ namespace Lumix.Application.Services
 		public async Task Like(Guid userId, Guid photoId)
 		{
 			var photo = await _photoRepository.GetById(photoId);
-			var like = LikeDto.Create(
-				Guid.NewGuid(),
-				userId,
-				photoId);
+			var like = new LikeDto
+			{
+				Id = Guid.NewGuid(),
+				UserId = userId,
+				PhotoId = photoId,
+				CreatedAt = DateTime.UtcNow
+			};
 
-			await _likesRepository.Add(like);
+            await _likesRepository.Add(like);
 			await _photoRepository.Update(photo);
 		}
 

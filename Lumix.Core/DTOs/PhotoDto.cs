@@ -14,6 +14,7 @@ namespace Lumix.Core.DTOs
 		public int LikeCount { get; set; }
 		public bool IsAvatar { get; set; }
 
+		public UserPreviewDto Author { get; set; }
         public List<LikeDto> Likes { get; set; } = new();
 		public List<CommentDto> Comments { get; set; } = new();
 		public List<PhotoTagDto> PhotoTags { get; set; } = new();
