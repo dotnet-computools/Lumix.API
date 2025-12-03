@@ -58,7 +58,7 @@ namespace Lumix.Application.Services
         {
             var tags = photoTags
                 .Select(x => x.Tag)
-                .Select(tag => TagDto.Create(tag.Id, tag.Name, tag.CreatedAt));
+                .Select(tag => new TagDto { Id = tag.Id, Name = tag.Name, CreatedAt = tag.CreatedAt });
 
             return tags;
         }
@@ -86,12 +86,14 @@ namespace Lumix.Application.Services
 
 			foreach (var tagString in newTagStrings)
 			{
-				var tag = TagDto.Create(
-					Guid.NewGuid(),
-					tagString,
-					DateTime.UtcNow);
+				var tag = new TagDto
+				{
+					Id = Guid.NewGuid(),
+					Name = tagString,
+					CreatedAt = DateTime.UtcNow
+				};
 
-				newTagsList.Add(tag);
+                newTagsList.Add(tag);
 			}
 
 			return newTagsList;
