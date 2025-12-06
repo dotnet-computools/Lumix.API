@@ -1,4 +1,5 @@
-﻿using Lumix.API.Extensions;
+﻿using Lumix.API.Contracts.Requests;
+using Lumix.API.Extensions;
 using Lumix.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ namespace Lumix.API.Controllers
 		}
 
 		[HttpPost("{id:guid}")]
-		public async Task<IActionResult> PostComment(Guid id, [FromForm] string commentText)
+		public async Task<IActionResult> PostComment(Guid id, [FromForm] CommentRequest request)
 		{
 			try
 			{
@@ -26,7 +27,7 @@ namespace Lumix.API.Controllers
 					return Unauthorized();
 				}
 
-				await _commentService.AddComment(userId, id, commentText);
+				await _commentService.AddComment(userId, id, request.Text, request.ParentId);
 				return Ok();
 			}
 			catch (Exception ex)

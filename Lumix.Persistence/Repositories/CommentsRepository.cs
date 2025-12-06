@@ -25,7 +25,8 @@ namespace Lumix.Persistence.Repositories
 				UserId = comment.UserId,
 				PhotoId = comment.PhotoId,
 				Text = comment.Text,
-				CreatedAt = comment.CreatedAt
+				CreatedAt = comment.CreatedAt,
+				ParentId = comment.ParentId
 			};
 
 			await _context.Comments.AddAsync(commentEntity);
@@ -37,7 +38,9 @@ namespace Lumix.Persistence.Repositories
 			var comments = await _context.Comments
 				.AsNoTracking()
 				.Where(p => p.PhotoId == photoId)
-				.ToListAsync();
+				.Include(c => c.User)
+				.OrderBy(c => c.CreatedAt)
+                .ToListAsync();
 
 			return _mapper.Map<IEnumerable<CommentDto>?>(comments);
 		}
