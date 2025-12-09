@@ -17,7 +17,7 @@ namespace Lumix.API.Controllers
 		}
 
 		[HttpPost("{id:guid}")]
-		public async Task<IActionResult> PostComment(Guid id, [FromForm] CommentRequest request)
+		public async Task<IActionResult> PostComment(Guid id, [FromBody] CommentRequest request)
 		{
 			try
 			{
@@ -27,8 +27,8 @@ namespace Lumix.API.Controllers
 					return Unauthorized();
 				}
 
-				await _commentService.AddComment(userId, id, request.Text, request.ParentId);
-				return Ok();
+				var created = await _commentService.AddComment(userId, id, request.Text, request.ParentId);
+				return Ok(created);
 			}
 			catch (Exception ex)
 			{

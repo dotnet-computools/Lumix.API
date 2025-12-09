@@ -13,7 +13,7 @@ namespace Lumix.Application.Services
 			_commentsRepository = commentsRepository;
 		}
 
-		public async Task AddComment(Guid userId, Guid photoId, string commentText, Guid? parentId)
+		public async Task<CommentDto> AddComment(Guid userId, Guid photoId, string commentText, Guid? parentId)
 		{
 			var comment = new CommentDto
 			{
@@ -26,7 +26,8 @@ namespace Lumix.Application.Services
             };
 
 
-            await _commentsRepository.Add(comment);
+            var created = await _commentsRepository.AddAsync(comment);
+			return created;
 		}
 
 		public async Task<IEnumerable<CommentDto>> GetByPhotoId(Guid photoId)

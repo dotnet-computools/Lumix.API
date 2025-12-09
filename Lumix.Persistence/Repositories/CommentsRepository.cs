@@ -17,7 +17,7 @@ namespace Lumix.Persistence.Repositories
 			_mapper = mapper;
 		}
 
-		public async Task Add(CommentDto comment)
+		public async Task<CommentDto> AddAsync(CommentDto comment)
 		{
 			var commentEntity = new Comment()
 			{
@@ -31,7 +31,13 @@ namespace Lumix.Persistence.Repositories
 
 			await _context.Comments.AddAsync(commentEntity);
 			await _context.SaveChangesAsync();
-		}
+
+			await _context.Entry(commentEntity)
+				.Reference(c => c.User)
+				.LoadAsync();
+
+			return _mapper.Map<CommentDto>(commentEntity);
+        }
 
 		public async Task<IEnumerable<CommentDto>?> GetByPhotoId(Guid photoId)
 		{
