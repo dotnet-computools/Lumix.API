@@ -32,10 +32,10 @@ namespace Lumix.Application.Services
 
 		public async Task<IEnumerable<CommentDto>> GetByPhotoId(Guid photoId)
 		{
-			var flatDtos = await _commentsRepository.GetByPhotoId(photoId)
+			var allComments = await _commentsRepository.GetByPhotoId(photoId)
 				?? Enumerable.Empty<CommentDto>();
 
-            var tree = BuildTree(flatDtos.ToList());
+            var tree = BuildTree(allComments.ToList());
 			return tree;
 		}
 
