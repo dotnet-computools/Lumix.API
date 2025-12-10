@@ -63,8 +63,9 @@ namespace Lumix.Infrastructure.PhotoUpload
 			{
 				BucketName = BUCKET_NAME,
 				Key = $"{userId}/thumbnail_{photoId}",
-				InputStream = modifiedPhoto.OpenReadStream()
-			};
+				InputStream = modifiedPhoto.OpenReadStream(),
+				CannedACL = S3CannedACL.PublicRead
+            };
 
 			var response = await _client.PutObjectAsync(request);
 			if (response.HttpStatusCode != HttpStatusCode.OK)

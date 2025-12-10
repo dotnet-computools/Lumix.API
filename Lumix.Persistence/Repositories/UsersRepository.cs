@@ -85,9 +85,18 @@ public class UsersRepository : IUsersRepository
             .Select(p => new PhotoPrewiewDto
             {
                 Id = p.Id,
-                Url = p.Url
+                Url = BuildThumbnailUrl(p.Url, p.Id)
             })
             .ToList()
         };
+    }
+
+    private string BuildThumbnailUrl(string photoUrl, Guid photoId)
+    {
+        var lastSlashIndex = photoUrl.LastIndexOf('/');
+        if(lastSlashIndex == -1)
+            return photoUrl;
+        var baseUrl = photoUrl.Substring(0, lastSlashIndex);
+        return $"{baseUrl}/thumbnail_{photoId}";
     }
 }
