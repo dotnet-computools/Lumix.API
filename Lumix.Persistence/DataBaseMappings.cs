@@ -17,7 +17,8 @@ public class DataBaseMappings : Profile
         CreateMap<Photo, PhotoDto>()
             .ForMember(d => d.Author, o => o.MapFrom(s => s.User));
         CreateMap<Like, LikeDto>();
-        CreateMap<Comment, CommentDto>();
+        CreateMap<Comment, CommentDto>()
+            .ForMember(d => d.Author, o => o.MapFrom(s => s.User));
         CreateMap<Follow, FollowDto>();
         CreateMap<Tag, TagDto>()
             .ForMember(d => d.PhotoTags, o => o.Ignore());
