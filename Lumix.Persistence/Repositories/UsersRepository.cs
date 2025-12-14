@@ -1,8 +1,8 @@
 using AutoMapper;
 using Lumix.Core.DTOs;
 using Lumix.Core.Interfaces.Repositories;
-using Lumix.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
+using Lumix.Application.Extensions;
 
 namespace Lumix.Persistence.Repositories;
 
@@ -85,9 +85,11 @@ public class UsersRepository : IUsersRepository
             .Select(p => new PhotoPrewiewDto
             {
                 Id = p.Id,
-                Url = p.Url
+                Url = p.Url.BuildThumbnailUrl(p.Id)
             })
             .ToList()
         };
     }
+
+    
 }
