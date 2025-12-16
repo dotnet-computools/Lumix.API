@@ -16,14 +16,18 @@ namespace Lumix.API.Controllers
 		private readonly IPhotoTagService _photoTagService;
 		private readonly IUserService _userService;
         private readonly IFileStorageService _storageService;
+		private readonly ILogger<PhotoController> _logger;
 
-		public PhotoController(IPhotoService photoService, ITagService service, IPhotoTagService photoTagService, IFileStorageService storageService, IUserService userService)
+		public PhotoController(IPhotoService photoService, ITagService service, 
+            IPhotoTagService photoTagService, IFileStorageService storageService, 
+            IUserService userService, ILogger<PhotoController> logger)
 		{
 			_photoService = photoService;
 			_tagService = service;
 			_photoTagService = photoTagService;
 			_storageService = storageService;
 			_userService = userService;
+			_logger = logger;
         }
 
 		[HttpPost("upload")]
@@ -114,36 +118,6 @@ namespace Lumix.API.Controllers
 			}
 		}
 
-		[HttpDelete("{id:guid}")]
-		public async Task<IActionResult> DeleteById(Guid id)
-		{
-			try
-			{
-				var userId = HttpContext.GetUserId() ?? Guid.Empty;
-				if (userId == Guid.Empty)
-				{
-					return Unauthorized();
-				}
-
-				var result = await _photoService.IsPhotoBelongToUser(userId, id);
-				if (!result)
-				{
-					return Forbid();
-				}
-
-				var photoToDelete = await _photoService.GetById(id);
-
-				await _storageService.DeleteFileFromStorage(photoToDelete.Url, userId);
-				await _storageService.DeleteThumbnailFromStorage(photoToDelete.Url, userId);
-
-				await _photoService.Delete(id);
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(ex.Message);
-			}
-		}
 
 		[HttpPut("{id:guid}")]
 		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRequest updateRequest)
@@ -178,5 +152,44 @@ namespace Lumix.API.Controllers
 				return BadRequest(ex.Message);
 			}
 		}
+
+        [HttpDelete("{photoId:guid}")]
+        public async Task<IActionResult> DeleteById(Guid photoId)
+        {
+            var userId = HttpContext.GetUserId();
+            if (!userId.HasValue)
+                return Unauthorized();
+
+            try
+            {
+                var photo = await _photoService.GetById(photoId);
+
+                await _photoService.Delete(photoId, userId.Value);
+
+                try
+                {
+                    await _storageService.DeleteFileFromStorage(photo.Url, userId.Value);
+                    await _storageService.DeleteThumbnailFromStorage(photo.Url, userId.Value);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to delete from S3: {Url}", photo.Url);
+                }
+
+                return NoContent();
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
+        }
 	}
 }

@@ -83,9 +83,22 @@ namespace Lumix.Application.Services
 			await _photosRepository.Update(photoToUpdate);
 		}
 
-		public async Task Delete(Guid id)
-		{
-			await _photosRepository.DeleteById(id);
-		}
+		public async Task Delete(Guid photoId, Guid currentUserId)
+        {
+			PhotoDto photo;
+            try
+            {
+                photo = await _photosRepository.GetById(photoId);
+            }
+            catch (InvalidOperationException)
+            {
+                throw new KeyNotFoundException("Фото не знайдено.");
+            }
+
+            if (photo.UserId != currentUserId)
+                throw new UnauthorizedAccessException("Ви не є власником фото.");
+
+			await _photosRepository.DeleteById(photoId);
+        }
 	}
 }

@@ -61,4 +61,15 @@ public class UserController : ControllerBase
         
         return Ok(profile);
     }
+
+    [Authorize]
+    [HttpGet("me")]
+    public ActionResult<Guid> GetCurrentUserId()
+    {
+        var userId = HttpContext.GetUserId();
+        if (!userId.HasValue)
+            return Unauthorized();
+        
+        return Ok(userId.Value);
+    }
 }
