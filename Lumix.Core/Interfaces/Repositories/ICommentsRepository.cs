@@ -5,6 +5,8 @@ namespace Lumix.Core.Interfaces.Repositories
 	public interface ICommentsRepository
 	{
 		Task<CommentDto> AddAsync(CommentDto comment);
+        Task<CommentDto> GetById(Guid commentId);
 		Task<IEnumerable<CommentDto>?> GetByPhotoId(Guid photoId);
-	}
+        Task DeleteById(Guid id);
+    }
 }

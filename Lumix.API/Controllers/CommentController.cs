@@ -55,5 +55,29 @@ namespace Lumix.API.Controllers
 				return BadRequest(ex.Message);
 			}
 		}
+
+        [HttpDelete("{id:guid}/{photoId:guid}")]
+        public async Task<IActionResult> DeleteComment(Guid id, Guid photoId)
+        {
+            try
+            {
+                var userId = HttpContext.GetUserId() ?? Guid.Empty;
+                if (userId == Guid.Empty)
+                {
+                    return Unauthorized();
+                }
+
+                await _commentService.DeleteById(id, photoId, userId);
+                return NoContent();
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
+        }
 	}
 }

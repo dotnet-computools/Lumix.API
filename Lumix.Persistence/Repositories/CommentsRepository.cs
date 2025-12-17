@@ -39,7 +39,17 @@ namespace Lumix.Persistence.Repositories
 			return _mapper.Map<CommentDto>(commentEntity);
         }
 
-		public async Task<IEnumerable<CommentDto>?> GetByPhotoId(Guid photoId)
+		public async Task<CommentDto> GetById(Guid commentId)
+		{
+			var comment =  await _context.Comments
+				.AsNoTracking()
+				.Include(c => c.User)
+				.FirstOrDefaultAsync(c => c.Id == commentId) 
+				?? throw new InvalidOperationException("Коментар не знайдено");
+			return _mapper.Map<CommentDto>(comment);
+        }
+
+        public async Task<IEnumerable<CommentDto>?> GetByPhotoId(Guid photoId)
 		{
 			var comments = await _context.Comments
 				.AsNoTracking()
@@ -50,5 +60,22 @@ namespace Lumix.Persistence.Repositories
 
 			return _mapper.Map<IEnumerable<CommentDto>?>(comments);
 		}
+
+        public async Task DeleteById(Guid id)
+        {
+            var comment = await _context.Comments
+                .FirstOrDefaultAsync(c => c.Id == id) ?? throw new InvalidOperationException("Коментар не знайдено");
+
+            if (comment.ParentId is null)
+            {
+                var children = await _context.Comments
+                    .Where(c => c.ParentId == id)
+                    .ToListAsync();
+                _context.Comments.RemoveRange(children);
+            }
+
+            _context.Comments.Remove(comment);
+			await _context.SaveChangesAsync();
+        }
 	}
 }
