@@ -7,11 +7,13 @@ namespace Lumix.Application.Services
 	public class CommentService : ICommentService
 	{
 		private readonly ICommentsRepository _commentsRepository;
+		private readonly IPhotosRepository _photosRepository;
 
-		public CommentService(ICommentsRepository commentsRepository)
+        public CommentService(ICommentsRepository commentsRepository, IPhotosRepository photosRepository)
 		{
 			_commentsRepository = commentsRepository;
-		}
+			_photosRepository = photosRepository;
+        }
 
 		public async Task<CommentDto> AddComment(Guid userId, Guid photoId, string commentText, Guid? parentId)
 		{
@@ -57,6 +59,17 @@ namespace Lumix.Application.Services
             }
 
             return roots;
+        }
+
+        public async Task DeleteById(Guid commentId, Guid photoId, Guid currentUserId)
+        {
+            var photo = await _photosRepository.GetById(photoId);
+            var comment = await _commentsRepository.GetById(commentId);
+
+            if (comment.Author.Id != currentUserId && photo.UserId != currentUserId)
+                throw new UnauthorizedAccessException();
+
+            await _commentsRepository.DeleteById(commentId);
         }
     }
 }

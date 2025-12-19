@@ -6,5 +6,6 @@ namespace Lumix.Core.Interfaces.Services
 	{
 		Task<CommentDto> AddComment(Guid userId, Guid photoId, string commentText, Guid? parentId);
 		Task<IEnumerable<CommentDto>> GetByPhotoId(Guid photoId);
-	}
+        Task DeleteById(Guid commentId, Guid photoId, Guid currentUserId);
+    }
 }

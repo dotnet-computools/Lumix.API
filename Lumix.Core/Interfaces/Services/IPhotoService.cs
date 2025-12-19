@@ -13,5 +13,7 @@ namespace Lumix.Core.Interfaces.Services
 		Task<IEnumerable<PhotoDto>> GetAllUserPhotos(Guid userId);
 		Task UpdateInfo(PhotoDto photoToUpdate, string newTitle);
 		Task Delete(Guid photoId, Guid currentUserId);
-	}
+        Task FullDelete(Guid photoId, Guid currentUserId);
+
+    }
 }

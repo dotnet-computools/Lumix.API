@@ -16,18 +16,16 @@ namespace Lumix.API.Controllers
 		private readonly IPhotoTagService _photoTagService;
 		private readonly IUserService _userService;
         private readonly IFileStorageService _storageService;
-		private readonly ILogger<PhotoController> _logger;
 
 		public PhotoController(IPhotoService photoService, ITagService service, 
             IPhotoTagService photoTagService, IFileStorageService storageService, 
-            IUserService userService, ILogger<PhotoController> logger)
+            IUserService userService)
 		{
 			_photoService = photoService;
 			_tagService = service;
 			_photoTagService = photoTagService;
 			_storageService = storageService;
 			_userService = userService;
-			_logger = logger;
         }
 
 		[HttpPost("upload")]
@@ -162,25 +160,8 @@ namespace Lumix.API.Controllers
 
             try
             {
-                var photo = await _photoService.GetById(photoId);
-
-                await _photoService.Delete(photoId, userId.Value);
-
-                try
-                {
-                    await _storageService.DeleteFileFromStorage(photo.Url, userId.Value);
-                    await _storageService.DeleteThumbnailFromStorage(photo.Url, userId.Value);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Failed to delete from S3: {Url}", photo.Url);
-                }
-
+                await _photoService.FullDelete(photoId, userId.Value);
                 return NoContent();
-            }
-            catch (InvalidOperationException)
-            {
-                return NotFound();
             }
             catch (KeyNotFoundException)
             {
