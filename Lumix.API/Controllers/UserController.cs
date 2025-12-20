@@ -3,6 +3,7 @@ using Lumix.API.Contracts.Response;
 using Lumix.API.Extensions;
 using Lumix.Core.DTOs;
 using Lumix.Core.Interfaces.Services;
+using Lumix.Persistence.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,25 +52,42 @@ public class UserController : ControllerBase
         }
     }
     [Authorize]
-    [HttpGet("profile")]
-    public async Task<ActionResult<UserProfileDto>> GetProfile()
+    [HttpGet("{userId:guid}")]
+    public async Task<ActionResult<UserProfileDto>> GetProfile(Guid userId)
     {
-        var userId = HttpContext.GetUserId();
-        if (!userId.HasValue)
-            return Unauthorized();
-        var profile = await _userService.GetProfileAsync(userId.Value);
+        UserProfileDto profile = new();
+        try
+        {
+            profile = await _userService.GetProfileAsync(userId);
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
+        
         
         return Ok(profile);
     }
 
     [Authorize]
     [HttpGet("me")]
-    public ActionResult<Guid> GetCurrentUserId()
+    public async Task<ActionResult<UserProfileDto>> GetMyProfile()
     {
         var userId = HttpContext.GetUserId();
         if (!userId.HasValue)
-            return Unauthorized();
-        
-        return Ok(userId.Value);
+            return Forbid();
+
+        UserProfileDto profile = new();
+        try
+        {
+            profile = await _userService.GetProfileAsync(userId.Value);
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
+
+
+        return Ok(profile);
     }
 }
