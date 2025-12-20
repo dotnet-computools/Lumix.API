@@ -55,7 +55,7 @@ public class UserController : ControllerBase
     [HttpGet("{userId:guid}")]
     public async Task<ActionResult<UserProfileDto>> GetProfile(Guid userId)
     {
-        UserProfileDto profile = new();
+        UserProfileDto profile;
         try
         {
             profile = await _userService.GetProfileAsync(userId);
@@ -77,7 +77,7 @@ public class UserController : ControllerBase
         if (!userId.HasValue)
             return Forbid();
 
-        UserProfileDto profile = new();
+        UserProfileDto profile;
         try
         {
             profile = await _userService.GetProfileAsync(userId.Value);
