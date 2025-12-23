@@ -1,5 +1,4 @@
 ﻿using Lumix.Core.DTOs;
-using Lumix.Core.Interfaces.Repositories;
 using Lumix.Core.Interfaces.Services;
 
 namespace Lumix.Application.Services
@@ -11,6 +10,7 @@ namespace Lumix.Application.Services
         {
             if (comment == null) throw new ArgumentNullException(nameof(comment));
             if (photo == null) throw new ArgumentNullException(nameof(photo));
+            if (comment.Author == null) throw new ArgumentNullException(nameof(comment.Author));
 
             return comment.Author.Id == currentUserId
                    || photo.UserId == currentUserId;

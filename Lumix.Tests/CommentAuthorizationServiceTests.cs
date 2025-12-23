@@ -1,56 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Lumix.Application.Services;
+﻿using Lumix.Application.Services;
 using Lumix.Core.DTOs;
 
 namespace Lumix.Tests
 {
     public class CommentAuthorizationServiceTests
     {
-        [Fact]
-        public void AuthorOfComment_CanDelete_ReturnsTrue()
+
+        [Theory]
+        [InlineData(true, false)] // Author of comment
+        [InlineData(false, true)] // Owner of photo
+        public void AuthorOfCommentOrPhotoOwner_CanDelete_ReturnsTrue(bool isAuthor, bool isPhotoOwner)
         {
             var userId = Guid.NewGuid();
-
             var comment = new CommentDto
             {
-                Author = new UserPreviewDto { Id = userId }
+                Author = new UserPreviewDto { Id = isAuthor ? userId : Guid.NewGuid() }
             };
-
             var photo = new PhotoDto
             {
-                UserId = Guid.NewGuid()
+                UserId = isPhotoOwner ? userId : Guid.NewGuid()
             };
-
             var sut = new CommentAuthorizationService();
-
             var result = sut.CanUserDeleteComment(comment, photo, userId);
-
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void PhotoOwner_CanDelete_ReturnsTrue()
-        {
-            var userId = Guid.NewGuid();
-
-            var comment = new CommentDto
-            {
-                Author = new UserPreviewDto { Id = Guid.NewGuid() }
-            };
-
-            var photo = new PhotoDto
-            {
-                UserId = userId
-            };
-
-            var sut = new CommentAuthorizationService();
-
-            var result = sut.CanUserDeleteComment(comment, photo, userId);
-
             Assert.True(result);
         }
 
