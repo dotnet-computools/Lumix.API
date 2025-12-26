@@ -3,7 +3,8 @@
 	public class UploadRequest
 	{
 		public IFormFile? PhotoFile { get; set; }
-		public string Title { get; set; } = string.Empty;
-		public IEnumerable<string>? Tags { get; set; }
-	}
+		public string? Title { get; set; }
+		public List<string> Tags { get; set; } = new();
+		public bool IsAvatar { get; set; }
+    }
 }

@@ -17,6 +17,7 @@ public static class ApplicationExtensions
         services.AddScoped<ITagService, TagService>();
         services.AddScoped<IPhotoTagService, PhotoTagService>();
         services.AddScoped<FollowService>();
+        services.AddScoped<ICommentAuthorizationService, CommentAuthorizationService>();
         return services;
     }
     

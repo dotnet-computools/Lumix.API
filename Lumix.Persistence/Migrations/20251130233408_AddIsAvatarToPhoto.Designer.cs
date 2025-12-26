@@ -4,6 +4,7 @@ using Lumix.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lumix.Persistence.Migrations
 {
     [DbContext(typeof(LumixDbContext))]
-    partial class LumixDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251130233408_AddIsAvatarToPhoto")]
+    partial class AddIsAvatarToPhoto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,9 +34,6 @@ namespace Lumix.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("PhotoId")
                         .HasColumnType("uniqueidentifier");
 
@@ -46,8 +46,6 @@ namespace Lumix.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
 
                     b.HasIndex("PhotoId");
 
@@ -124,6 +122,7 @@ namespace Lumix.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -263,11 +262,6 @@ namespace Lumix.Persistence.Migrations
 
             modelBuilder.Entity("Lumix.Persistence.Entities.Comment", b =>
                 {
-                    b.HasOne("Lumix.Persistence.Entities.Comment", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("Lumix.Persistence.Entities.Photo", "Photo")
                         .WithMany("Comments")
                         .HasForeignKey("PhotoId")
@@ -279,8 +273,6 @@ namespace Lumix.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Parent");
 
                     b.Navigation("Photo");
 
@@ -364,11 +356,6 @@ namespace Lumix.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Lumix.Persistence.Entities.Comment", b =>
-                {
-                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("Lumix.Persistence.Entities.Photo", b =>

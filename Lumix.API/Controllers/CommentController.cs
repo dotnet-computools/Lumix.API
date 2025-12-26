@@ -1,4 +1,5 @@
-﻿using Lumix.API.Extensions;
+﻿using Lumix.API.Contracts.Requests;
+using Lumix.API.Extensions;
 using Lumix.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ namespace Lumix.API.Controllers
 		}
 
 		[HttpPost("{id:guid}")]
-		public async Task<IActionResult> PostComment(Guid id, [FromForm] string commentText)
+		public async Task<IActionResult> PostComment(Guid id, [FromBody] CommentRequest request)
 		{
 			try
 			{
@@ -26,8 +27,8 @@ namespace Lumix.API.Controllers
 					return Unauthorized();
 				}
 
-				await _commentService.AddComment(userId, id, commentText);
-				return Ok();
+				var created = await _commentService.AddComment(userId, id, request.Text, request.ParentId);
+				return Ok(created);
 			}
 			catch (Exception ex)
 			{
@@ -54,5 +55,29 @@ namespace Lumix.API.Controllers
 				return BadRequest(ex.Message);
 			}
 		}
+
+        [HttpDelete("{id:guid}/{photoId:guid}")]
+        public async Task<IActionResult> DeleteComment(Guid id, Guid photoId)
+        {
+            try
+            {
+                var userId = HttpContext.GetUserId() ?? Guid.Empty;
+                if (userId == Guid.Empty)
+                {
+                    return Unauthorized();
+                }
+
+                await _commentService.DeleteById(id, photoId, userId);
+                return NoContent();
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
+        }
 	}
 }

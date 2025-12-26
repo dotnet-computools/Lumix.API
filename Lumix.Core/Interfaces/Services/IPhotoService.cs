@@ -4,7 +4,7 @@ namespace Lumix.Core.Interfaces.Services
 {
 	public interface IPhotoService
 	{
-		Task<Guid> Upload(string title, string url, Guid photoId, Guid userId);
+		Task<Guid> Upload(string title, string url, Guid photoId, Guid userId, bool isAvatar);
 		Task<PhotoDto> GetById(Guid id);
 		Task<IEnumerable<PhotoDto>> GetByIds(IEnumerable<Guid> photoId);
 		Task<IEnumerable<PhotoDto>> GetAll();
@@ -12,6 +12,8 @@ namespace Lumix.Core.Interfaces.Services
 		Task<bool> IsPhotoBelongToUser(Guid userId, Guid photoId);
 		Task<IEnumerable<PhotoDto>> GetAllUserPhotos(Guid userId);
 		Task UpdateInfo(PhotoDto photoToUpdate, string newTitle);
-		Task Delete(Guid id);
-	}
+		Task Delete(Guid photoId, Guid currentUserId);
+        Task FullDelete(Guid photoId, Guid currentUserId);
+
+    }
 }

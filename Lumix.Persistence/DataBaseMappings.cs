@@ -12,12 +12,16 @@ public class DataBaseMappings : Profile
     public DataBaseMappings()
     {
         CreateMap<User, UserDto>();
+        CreateMap<User, UserPreviewDto>();
         CreateMap<RefreshToken, RefreshTokenDto>();
-        CreateMap<Photo, PhotoDto>();
+        CreateMap<Photo, PhotoDto>()
+            .ForMember(d => d.Author, o => o.MapFrom(s => s.User));
         CreateMap<Like, LikeDto>();
-        CreateMap<Comment, CommentDto>();
+        CreateMap<Comment, CommentDto>()
+            .ForMember(d => d.Author, o => o.MapFrom(s => s.User));
         CreateMap<Follow, FollowDto>();
-        CreateMap<Tag, TagDto>();
+        CreateMap<Tag, TagDto>()
+            .ForMember(d => d.PhotoTags, o => o.Ignore());
         CreateMap<PhotoTag, PhotoTagDto>();
         CreateMap<FollowDto, Follow>();
     }
