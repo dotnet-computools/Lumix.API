@@ -23,6 +23,11 @@ namespace Lumix.Persistence.Configurations
 				.WithMany(p => p.Comments)
 				.HasForeignKey(c => c.PhotoId)
 				.OnDelete(DeleteBehavior.Cascade);
+
+			builder.HasOne(c => c.Parent)
+				.WithMany(c => c.Children)
+				.HasForeignKey(c => c.ParentId)
+				.OnDelete(DeleteBehavior.NoAction);
 		}
 	}
 }

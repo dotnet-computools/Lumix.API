@@ -17,13 +17,16 @@ namespace Lumix.Application.Services
 
 		public async Task AddNew(Guid tagId, Guid photoId)
 		{
-			var newPhotoTag = PhotoTagDto.Create(
-				Guid.NewGuid(),
-				tagId,
-				photoId,
-				DateTime.UtcNow);
+			var newPhotoTag = new PhotoTagDto
+			{
+                Id = Guid.NewGuid(),
+                TagId = tagId,
+                PhotoId = photoId,
+                CreatedAt = DateTime.UtcNow
+			};
 
-			await _photoTagRepository.Add(newPhotoTag);
+
+            await _photoTagRepository.Add(newPhotoTag);
 		}
 
 		public async Task AddNewRange(IEnumerable<TagDto> photoTags, Guid photoId)
@@ -32,13 +35,15 @@ namespace Lumix.Application.Services
 
 			foreach (var photoTag in photoTags)
 			{
-				var newPhotoTag = PhotoTagDto.Create(
-					Guid.NewGuid(),
-					photoTag.Id,
-					photoId,
-					DateTime.UtcNow);
+				var newPhotoTag = new PhotoTagDto
+				{
+					Id =  Guid.NewGuid(),
+					TagId = photoTag.Id,
+					PhotoId = photoId,
+					CreatedAt = DateTime.UtcNow
+				};
 
-				newPhotoTagsList.Add(newPhotoTag);
+                newPhotoTagsList.Add(newPhotoTag);
 			}
 
 			await _photoTagRepository.AddRange(newPhotoTagsList);

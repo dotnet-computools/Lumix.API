@@ -47,15 +47,7 @@ namespace Lumix.API.Controllers
             try
             {
                 var (accessToken, refreshToken) = await _authService.Login(request.Email, request.Password);
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.None
-                };
-        
-               Response.Cookies.Append("accessToken", accessToken, cookieOptions);
-               Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+                
                 var loginResponse = new LoginResponse
                 {
                     AccessToken = accessToken,

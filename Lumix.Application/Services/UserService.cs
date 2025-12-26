@@ -26,4 +26,14 @@ public class UserService : IUserService
 
         return await _usersRepository.UpdateUsernameAsync(userId, username);
     }
+
+    public async Task<UserProfileDto> GetProfileAsync(Guid userId)
+        => await _usersRepository.GetProfileAsync(userId);
+
+    public async Task UpdateProfilePictureAsync(Guid userId, string profilePictureUrl)
+    {
+        if(string.IsNullOrWhiteSpace(profilePictureUrl))
+            throw new ArgumentException("Profile picture URL cannot be empty");
+        await _usersRepository.UpdateProfilePictureAsync(userId, profilePictureUrl);
+    }
 }

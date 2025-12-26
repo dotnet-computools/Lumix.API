@@ -3,8 +3,10 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Azure;
 using Lumix.Application.PhotoUpload;
+using Lumix.Infrastructure.Config;
 using Lumix.Persistence.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System.Net;
 
 namespace Lumix.Infrastructure.PhotoUpload
@@ -17,11 +19,12 @@ namespace Lumix.Infrastructure.PhotoUpload
 		
 		private const string BUCKET_NAME = "lumix";
 
-		public S3BucketService(IPhotoFileValidationService photoFileValidationService, IPhotoResizeService photoResizeService)
+		public S3BucketService(IPhotoFileValidationService photoFileValidationService, IPhotoResizeService photoResizeService, IOptions<AwsOptions> options)
 		{
+			var _aws = options.Value;
 			_photoFileValidationService = photoFileValidationService;
 			_photoResizeService = photoResizeService;
-			_client = new AmazonS3Client(RegionEndpoint.EUNorth1);
+			_client = new AmazonS3Client(_aws.AccessKey, _aws.SecretKey, RegionEndpoint.GetBySystemName(_aws.Region));
 		}
 
 		public async Task<string> UploadFileToStorage(IFormFile photoFile, Guid photoId, Guid userId)
@@ -32,7 +35,8 @@ namespace Lumix.Infrastructure.PhotoUpload
 			{
 				BucketName = BUCKET_NAME,
 				Key = $"{userId}/{photoId}",
-				InputStream = photoFile.OpenReadStream()
+				InputStream = photoFile.OpenReadStream(),
+				CannedACL = S3CannedACL.PublicRead
 			};
 
 			var responce = await _client.PutObjectAsync(request);
@@ -59,8 +63,9 @@ namespace Lumix.Infrastructure.PhotoUpload
 			{
 				BucketName = BUCKET_NAME,
 				Key = $"{userId}/thumbnail_{photoId}",
-				InputStream = modifiedPhoto.OpenReadStream()
-			};
+				InputStream = modifiedPhoto.OpenReadStream(),
+				CannedACL = S3CannedACL.PublicRead
+            };
 
 			var response = await _client.PutObjectAsync(request);
 			if (response.HttpStatusCode != HttpStatusCode.OK)

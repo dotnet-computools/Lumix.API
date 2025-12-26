@@ -1,4 +1,5 @@
 ﻿using Lumix.API.Contracts.Requests.Photo;
+using Lumix.API.Contracts.Response.Photo;
 using Lumix.API.Extensions;
 using Lumix.Application.PhotoUpload;
 using Lumix.Core.Interfaces.Services;
@@ -13,15 +14,19 @@ namespace Lumix.API.Controllers
 		private readonly IPhotoService _photoService;
 		private readonly ITagService _tagService;
 		private readonly IPhotoTagService _photoTagService;
-		private readonly IFileStorageService _storageService;
+		private readonly IUserService _userService;
+        private readonly IFileStorageService _storageService;
 
-		public PhotoController(IPhotoService photoService, ITagService service, IPhotoTagService photoTagService, IFileStorageService storageService)
+		public PhotoController(IPhotoService photoService, ITagService service, 
+            IPhotoTagService photoTagService, IFileStorageService storageService, 
+            IUserService userService)
 		{
 			_photoService = photoService;
 			_tagService = service;
 			_photoTagService = photoTagService;
 			_storageService = storageService;
-		}
+			_userService = userService;
+        }
 
 		[HttpPost("upload")]
 		public async Task<IActionResult> Upload([FromForm] UploadRequest uploadRequest)
@@ -37,14 +42,27 @@ namespace Lumix.API.Controllers
 				var photoId = Guid.NewGuid();
 				var photoS3Url = await _storageService.UploadFileToStorage(uploadRequest.PhotoFile, photoId, userId);
 				await _storageService.UploadThumbnailToStorage(uploadRequest.PhotoFile, photoId, userId);
-				var newPhotoId = await _photoService.Upload(uploadRequest.Title, photoS3Url, photoId, userId);
+				var newPhotoId = await _photoService.Upload(uploadRequest.Title, photoS3Url, photoId, userId, uploadRequest.IsAvatar);
 
-				await _tagService.CheckAndAddNewTags(uploadRequest.Tags ?? Enumerable.Empty<string>());
-				var tags = await _tagService.GetAllTagsFromStrings(uploadRequest.Tags ?? Enumerable.Empty<string>());
+				if (uploadRequest.IsAvatar)
+				{
+					await _userService.UpdateProfilePictureAsync(userId, photoS3Url);
+				}
+				else
+				{
+                    await _tagService.CheckAndAddNewTags(uploadRequest.Tags ?? Enumerable.Empty<string>());
+                    var tags = await _tagService.GetAllTagsFromStrings(uploadRequest.Tags ?? Enumerable.Empty<string>());
 
-				await _photoTagService.AddNewRange(tags, newPhotoId);
+                    await _photoTagService.AddNewRange(tags, newPhotoId);
+                }
 
-				return Ok();
+				var response = new PhotoUploadResponse
+				{
+					PhotoId = newPhotoId,
+					PhotoUrl = photoS3Url
+				};
+
+				return Ok(response);
 			}
 			catch (Exception ex)
 			{
@@ -98,36 +116,6 @@ namespace Lumix.API.Controllers
 			}
 		}
 
-		[HttpDelete("{id:guid}")]
-		public async Task<IActionResult> DeleteById(Guid id)
-		{
-			try
-			{
-				var userId = HttpContext.GetUserId() ?? Guid.Empty;
-				if (userId == Guid.Empty)
-				{
-					return Unauthorized();
-				}
-
-				var result = await _photoService.IsPhotoBelongToUser(userId, id);
-				if (!result)
-				{
-					return Forbid();
-				}
-
-				var photoToDelete = await _photoService.GetById(id);
-
-				await _storageService.DeleteFileFromStorage(photoToDelete.Url, userId);
-				await _storageService.DeleteThumbnailFromStorage(photoToDelete.Url, userId);
-
-				await _photoService.Delete(id);
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(ex.Message);
-			}
-		}
 
 		[HttpPut("{id:guid}")]
 		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRequest updateRequest)
@@ -162,5 +150,27 @@ namespace Lumix.API.Controllers
 				return BadRequest(ex.Message);
 			}
 		}
+
+        [HttpDelete("{photoId:guid}")]
+        public async Task<IActionResult> DeleteById(Guid photoId)
+        {
+            var userId = HttpContext.GetUserId();
+            if (!userId.HasValue)
+                return Unauthorized();
+
+            try
+            {
+                await _photoService.FullDelete(photoId, userId.Value);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
+        }
 	}
 }

@@ -3,6 +3,7 @@ using Lumix.API.Contracts.Response;
 using Lumix.API.Extensions;
 using Lumix.Core.DTOs;
 using Lumix.Core.Interfaces.Services;
+using Lumix.Persistence.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,5 +50,44 @@ public class UserController : ControllerBase
         {
             return NotFound(ex.Message);
         }
+    }
+    [Authorize]
+    [HttpGet("{userId:guid}")]
+    public async Task<ActionResult<UserProfileDto>> GetProfile(Guid userId)
+    {
+        UserProfileDto profile;
+        try
+        {
+            profile = await _userService.GetProfileAsync(userId);
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
+        
+        
+        return Ok(profile);
+    }
+
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<ActionResult<UserProfileDto>> GetMyProfile()
+    {
+        var userId = HttpContext.GetUserId();
+        if (!userId.HasValue)
+            return Forbid();
+
+        UserProfileDto profile;
+        try
+        {
+            profile = await _userService.GetProfileAsync(userId.Value);
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
+
+
+        return Ok(profile);
     }
 }

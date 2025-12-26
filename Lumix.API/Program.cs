@@ -1,5 +1,3 @@
-using System.Text;
-using System.Text.Json.Serialization;
 using Lumix.API.Extensions;
 using Lumix.API.Infrastructure;
 using Lumix.Application;
@@ -9,13 +7,16 @@ using Lumix.Core.Interfaces.Services;
 using Lumix.Infrastructure;
 using Lumix.Infrastructure.Authenfication;
 using Lumix.Infrastructure.Authenfication.Jwt;
+using Lumix.Infrastructure.Config;
 using Lumix.Persistence;
+using Lumix.Persistence;
+using Lumix.Persistence.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using Lumix.Persistence;
-using Lumix.Persistence.Entities;
+using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var AllowSpecificOrigins = "allowSpecificOrigins";
@@ -44,6 +45,9 @@ services.AddApiAuthentication(configuration);
 services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
 services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+services.Configure<AwsOptions>(
+    builder.Configuration.GetSection("AWS"));
 
 services.AddApplication();
 services.AddInfrastructure();
